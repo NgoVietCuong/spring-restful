@@ -1,4 +1,4 @@
-package com.nvc.spring_boot.entity;
+package com.nvc.spring_boot.domain;
 
 import jakarta.persistence.*;
 

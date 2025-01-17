@@ -1,11 +1,10 @@
 package com.nvc.spring_boot.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.nvc.spring_boot.entity.User;
+import com.nvc.spring_boot.domain.User;
 import com.nvc.spring_boot.repository.UserRepository;
 
 @Service
