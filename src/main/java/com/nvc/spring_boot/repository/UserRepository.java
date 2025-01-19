@@ -7,5 +7,5 @@ import com.nvc.spring_boot.domain.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    
+    User findByEmail(String email);
 }
