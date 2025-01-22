@@ -20,6 +20,10 @@ spring:
     baseline-on-migrate: true
     validate-on-migrate: true
 
+jwt:
+  base64-secret: 2ZfCLkmZQa8jh294Db6W4lS1InE5E7Lcyo3QtJQmmvM/j0+V5/stHDXi+OuboWOiAQprw5GxF29WCQfw2DKXGA==
+  expiration: 86400
+
 logging:
   level:
     org.springframework.jdbc: DEBUG

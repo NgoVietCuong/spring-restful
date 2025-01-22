@@ -17,7 +17,7 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
 
     @Override
     public boolean supports(MethodParameter returnType, Class converterType) {
-        return true;
+        return true; // applied to all responses
     }
 
     @Override
@@ -28,9 +28,12 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
         RestResponse<Object> res = new RestResponse<Object>();
         res.setStatusCode(status);
 
+        // api error
         if (status >= 400) {
             return body;
-        } else {
+        }
+        // api success
+        else {
             res.setData(body);
             res.setMessage("call api successfully");
         }

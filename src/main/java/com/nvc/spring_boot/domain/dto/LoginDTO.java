@@ -3,10 +3,10 @@ package com.nvc.spring_boot.domain.dto;
 import jakarta.validation.constraints.NotBlank;
 
 public class LoginDTO {
-    @NotBlank(message = "Username is not empty")
+    @NotBlank(message = "Username must not be empty")
     private String username;
 
-    @NotBlank(message = "Password is not empty")
+    @NotBlank(message = "Password must not be empty")
     private String password;
 
     public String getUsername() {
