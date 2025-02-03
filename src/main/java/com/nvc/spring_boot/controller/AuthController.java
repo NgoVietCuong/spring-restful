@@ -33,7 +33,7 @@ public class AuthController {
 
         String accessToken = securityUtil.createToken(authentication);
         ResLoginDTO res = new ResLoginDTO();
-        res.setAccessTOken(accessToken);
+        res.setAccessToken(accessToken);
         return ResponseEntity.ok().body(res);
     }
 }
