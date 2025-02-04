@@ -29,6 +29,8 @@ public class GlobalException {
         return ResponseEntity.badRequest().body(res);
 	}
 
+
+    //validate dto
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<RestResponse<Object>> validationError(MethodArgumentNotValidException ex) {
         BindingResult result = ex.getBindingResult();

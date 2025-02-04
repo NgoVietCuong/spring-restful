@@ -1,6 +1,7 @@
 package com.nvc.spring_boot.config;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -24,6 +25,8 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         this.mapper = mapper;
     }
 
+
+    //handle jwt exception
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException authException) throws IOException, ServletException {
@@ -31,8 +34,13 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setContentType("application/json");
 
         RestResponse<Object> res = new RestResponse<Object>();
+        
+        String errorMessage = Optional.ofNullable(authException.getCause()) //empty token
+                .map(Throwable::getMessage)
+                .orElse(authException.getMessage());
+
         res.setStatusCode(HttpStatus.UNAUTHORIZED.value());
-        res.setError(authException.getCause().getMessage());
+        res.setError(errorMessage);
         res.setMessage("Invalid token");
         mapper.writeValue(response.getWriter(), res);
     }
