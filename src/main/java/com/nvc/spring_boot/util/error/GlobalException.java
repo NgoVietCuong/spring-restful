@@ -18,15 +18,14 @@ import com.nvc.spring_boot.domain.RestResponse;
 @RestControllerAdvice
 public class GlobalException {
     @ExceptionHandler(value = {
-        IdInvalidException.class,
         UsernameNotFoundException.class,
         BadCredentialsException.class
     })
-	public ResponseEntity<Object> handleIdException(IdInvalidException idException) {
+	public ResponseEntity<Object> handleIdException(Exception ex) {
         RestResponse<Object> res = new RestResponse<Object>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
-        res.setError(idException.getMessage());
-        res.setMessage("IdInvalidException");
+        res.setError(ex.getMessage());
+        res.setMessage("Exception occurs...");
         return ResponseEntity.badRequest().body(res);
 	}
 
