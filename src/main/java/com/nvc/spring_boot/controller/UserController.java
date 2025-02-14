@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nvc.spring_boot.domain.User;
 import com.nvc.spring_boot.service.UserService;
 import com.nvc.spring_boot.util.error.IdInvalidException;
-
-import org.springframework.web.bind.annotation.PutMapping;
 
 
 @RestController
@@ -52,11 +51,11 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) throws IdInvalidException {
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) throws IdInvalidException {
         if (id >= 100) {
             throw new IdInvalidException("Id must be less than 100");
         }
         userService.deleteUser(id);
-        return ResponseEntity.ok("User deleted");
+        return ResponseEntity.ok(null);
     }
 }
