@@ -1,7 +1,11 @@
 package com.nvc.spring_boot.service;
 
 import com.nvc.spring_boot.domain.Company;
+import com.nvc.spring_boot.domain.dto.MetaDTO;
+import com.nvc.spring_boot.domain.dto.PaginationDTO;
 import com.nvc.spring_boot.repository.CompanyRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +18,20 @@ public class CompanyService {
         this.companyRepository = companyRepository;
     }
 
-    public List<Company> getList() {
-        return companyRepository.findAll();
+    public PaginationDTO getList(Pageable pageable) {
+        Page<Company> pageCompany = companyRepository.findAll(pageable);
+        PaginationDTO result = new PaginationDTO();
+        MetaDTO meta = new MetaDTO();
+
+        meta.setCurrentPage(pageCompany.getNumber() + 1);
+        meta.setItemsPerPage(pageCompany.getSize());
+        meta.setTotalPages(pageCompany.getTotalPages());
+        meta.setTotalItems(pageCompany.getTotalElements());
+
+        result.setMeta(meta);
+        result.setContent(pageCompany.getContent());
+
+        return result;
     }
 
     public Company findCompany(Long id) {

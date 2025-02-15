@@ -3,7 +3,10 @@ package com.nvc.spring_boot.controller;
 import java.util.List;
 import java.util.Optional;
 
+import com.nvc.spring_boot.domain.dto.PaginationDTO;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +25,13 @@ public class CompanyController {
     }
 
     @GetMapping("/companies/list")
-    public ResponseEntity<List<Company>> getList(
+    public ResponseEntity<PaginationDTO> getList(
             @RequestParam("page") Optional<String> pageOptional,
             @RequestParam("limit") Optional<String> limitOptional) {
         String page = pageOptional.isPresent() ? pageOptional.get() : "";
         String limit = limitOptional.isPresent() ? limitOptional.get() : "";
-        return ResponseEntity.ok(companyService.getList());
+        Pageable pageable = PageRequest.of(Integer.parseInt(page) - 1, Integer.parseInt(limit));
+        return ResponseEntity.ok(companyService.getList(pageable));
     }
 
     @GetMapping("/companies/{id}")
