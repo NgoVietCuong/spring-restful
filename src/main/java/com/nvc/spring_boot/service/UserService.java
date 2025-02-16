@@ -7,6 +7,7 @@ import com.nvc.spring_boot.domain.dto.MetaDTO;
 import com.nvc.spring_boot.domain.dto.PaginationDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.nvc.spring_boot.domain.User;
@@ -20,18 +21,18 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public PaginationDTO getList(Pageable pageable) {
-        Page<User> userCompany = userRepository.findAll(pageable);
+    public PaginationDTO getList(Specification<User> specification, Pageable pageable) {
+        Page<User> pageUser = userRepository.findAll(specification, pageable);
         PaginationDTO result = new PaginationDTO();
         MetaDTO meta = new MetaDTO();
 
-        meta.setCurrentPage(userCompany.getNumber() + 1);
-        meta.setItemsPerPage(userCompany.getSize());
-        meta.setTotalPages(userCompany.getTotalPages());
-        meta.setTotalItems(userCompany.getTotalElements());
+        meta.setCurrentPage(pageable.getPageNumber() + 1);
+        meta.setItemsPerPage(pageable.getPageSize());
+        meta.setTotalPages(pageUser.getTotalPages());
+        meta.setTotalItems(pageUser.getTotalElements());
 
         result.setMeta(meta);
-        result.setContent(userCompany.getContent());
+        result.setContent(pageUser.getContent());
 
         return result;
     }

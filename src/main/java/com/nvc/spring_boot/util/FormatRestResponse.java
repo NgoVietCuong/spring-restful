@@ -1,5 +1,6 @@
 package com.nvc.spring_boot.util;
 
+import com.nvc.spring_boot.util.annotation.ApiMessage;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
@@ -35,7 +36,8 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
         // api success
         else {
             res.setData(body);
-            res.setMessage("call api successfully");
+            ApiMessage message = returnType.getMethodAnnotation(ApiMessage.class);
+            res.setMessage(message != null ?  message.value() : "call api successfully");
         }
 
         return res;

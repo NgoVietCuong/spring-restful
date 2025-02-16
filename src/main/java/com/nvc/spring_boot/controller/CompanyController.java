@@ -4,9 +4,12 @@ import java.util.List;
 import java.util.Optional;
 
 import com.nvc.spring_boot.domain.dto.PaginationDTO;
+import com.nvc.spring_boot.util.annotation.ApiMessage;
+import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,31 +28,34 @@ public class CompanyController {
     }
 
     @GetMapping("/companies/list")
+    @ApiMessage("get company list")
     public ResponseEntity<PaginationDTO> getList(
-            @RequestParam("page") Optional<String> pageOptional,
-            @RequestParam("limit") Optional<String> limitOptional) {
-        String page = pageOptional.isPresent() ? pageOptional.get() : "";
-        String limit = limitOptional.isPresent() ? limitOptional.get() : "";
-        Pageable pageable = PageRequest.of(Integer.parseInt(page) - 1, Integer.parseInt(limit));
-        return ResponseEntity.ok(companyService.getList(pageable));
+           @Filter Specification<Company> specification,
+           Pageable pageable
+    ) {
+        return ResponseEntity.ok(companyService.getList(specification, pageable));
     }
 
     @GetMapping("/companies/{id}")
+    @ApiMessage("get company info")
     public ResponseEntity<Company> findCompany(@PathVariable("id") Long id) {
         return ResponseEntity.ok(companyService.findCompany(id));
     }
 
     @PutMapping("/companies")
+    @ApiMessage("update company info")
     public ResponseEntity<Company> updateCompany(@Valid @RequestBody Company company) {
         return ResponseEntity.ok(companyService.updateCompany(company));
     }
 
     @PostMapping("/companies")
+    @ApiMessage("create new company")
     public ResponseEntity<Company> createCompany(@Valid @RequestBody Company company) {
         return ResponseEntity.status(HttpStatus.CREATED).body(companyService.createCompany(company));
     }
 
     @DeleteMapping("/companies/{id}")
+    @ApiMessage("delete company")
     public ResponseEntity<Void> deleteCompany(@PathVariable("id") Long id) throws IdInvalidException {
         if (id >= 100) {
             throw new IdInvalidException("Id must be less than 100");

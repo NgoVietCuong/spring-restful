@@ -3,9 +3,13 @@ package com.nvc.spring_boot.controller;
 import java.util.List;
 import java.util.Optional;
 
+import com.nvc.spring_boot.domain.Company;
 import com.nvc.spring_boot.domain.dto.PaginationDTO;
+import com.nvc.spring_boot.util.annotation.ApiMessage;
+import com.turkraft.springfilter.boot.Filter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,27 +31,28 @@ public class UserController {
     }
 
     @GetMapping("/users/list")
+    @ApiMessage("get user list")
     public ResponseEntity<PaginationDTO> getList(
-            @RequestParam("page") Optional<String> pageOptional,
-            @RequestParam("limit") Optional<String> limitOptional
+            @Filter Specification<User> specification,
+            Pageable pageable
     ) {
-        String page = pageOptional.isPresent() ? pageOptional.get() : "";
-        String limit = limitOptional.isPresent() ? limitOptional.get() : "";
-        Pageable pageable = PageRequest.of(Integer.parseInt(page) - 1, Integer.parseInt(limit));
-        return ResponseEntity.ok(userService.getList(pageable));
+        return ResponseEntity.ok(userService.getList(specification, pageable));
     }
 
     @GetMapping("/users/{id}")
+    @ApiMessage("get user info")
     public ResponseEntity<User> findUser(@PathVariable("id") Long id) {
         return ResponseEntity.ok(userService.findUser(id));
     }
 
     @PutMapping("/users")
+    @ApiMessage("update user info")
     public ResponseEntity<User> updateUser(@RequestBody User user) {
         return ResponseEntity.ok(userService.updateUser(user));
     }
     
     @PostMapping("/users")
+    @ApiMessage("create new user")
     public ResponseEntity<User> createUser(@RequestBody User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User newUser = userService.createUser(user);
@@ -55,6 +60,7 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
+    @ApiMessage("delete user")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) throws IdInvalidException {
         if (id >= 100) {
             throw new IdInvalidException("Id must be less than 100");
