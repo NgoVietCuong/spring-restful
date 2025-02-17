@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS companies
     description MEDIUMTEXT,
     address VARCHAR(255),
     logo VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP,
     created_by VARCHAR(255),
     updated_by VARCHAR(255)
 )
