@@ -5,6 +5,7 @@ import java.util.List;
 import com.nvc.spring_boot.domain.Company;
 import com.nvc.spring_boot.domain.dto.MetaDTO;
 import com.nvc.spring_boot.domain.dto.PaginationDTO;
+import com.nvc.spring_boot.domain.dto.ResUpdateUserDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -41,12 +42,12 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    public User updateUser(User userData) {
+    public User updateUser(ResUpdateUserDTO userData) {
         User user = findUser(userData.getId());
         if (user != null) {
             user.setName(userData.getName());
-            user.setEmail(userData.getEmail());
-            user.setPassword(userData.getPassword());
+            user.setGender(userData.getGender());
+            user.setAddress(userData.getAddress());
             return userRepository.save(user);
         }
 
