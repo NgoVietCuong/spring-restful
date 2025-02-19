@@ -21,7 +21,7 @@ public class GlobalException {
         UsernameNotFoundException.class,
         BadCredentialsException.class
     })
-	public ResponseEntity<Object> handleIdException(Exception ex) {
+	public ResponseEntity<Object> handleBadRequestException(Exception ex) {
         RestResponse<Object> res = new RestResponse<Object>();
         res.setStatusCode(HttpStatus.BAD_REQUEST.value());
         res.setError(ex.getMessage());

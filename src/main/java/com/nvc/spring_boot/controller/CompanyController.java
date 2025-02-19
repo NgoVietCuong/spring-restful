@@ -1,13 +1,9 @@
 package com.nvc.spring_boot.controller;
 
-import java.util.List;
-import java.util.Optional;
-
 import com.nvc.spring_boot.domain.dto.PaginationDTO;
 import com.nvc.spring_boot.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -16,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.nvc.spring_boot.domain.Company;
 import com.nvc.spring_boot.service.CompanyService;
-import com.nvc.spring_boot.util.error.IdInvalidException;
+import com.nvc.spring_boot.util.error.BadRequestException;
 
 
 @RestController
@@ -56,10 +52,7 @@ public class CompanyController {
 
     @DeleteMapping("/companies/{id}")
     @ApiMessage("delete company")
-    public ResponseEntity<Void> deleteCompany(@PathVariable("id") Long id) throws IdInvalidException {
-        if (id >= 100) {
-            throw new IdInvalidException("Id must be less than 100");
-        }
+    public ResponseEntity<Void> deleteCompany(@PathVariable("id") Long id) {
         companyService.deleteCompany(id);
         return ResponseEntity.ok(null);
     }
