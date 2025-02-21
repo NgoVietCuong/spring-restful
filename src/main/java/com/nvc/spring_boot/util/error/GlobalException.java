@@ -19,7 +19,9 @@ import com.nvc.spring_boot.domain.RestResponse;
 public class GlobalException {
     @ExceptionHandler(value = {
         UsernameNotFoundException.class,
-        BadCredentialsException.class
+        BadCredentialsException.class,
+        BadRequestException.class,
+        ResourceNotFoundException.class
     })
 	public ResponseEntity<Object> handleBadRequestException(Exception ex) {
         RestResponse<Object> res = new RestResponse<Object>();

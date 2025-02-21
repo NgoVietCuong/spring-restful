@@ -1,6 +1,7 @@
 package com.nvc.spring_boot.service;
 
 import com.nvc.spring_boot.util.error.BadRequestException;
+import com.nvc.spring_boot.util.error.ResourceNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,7 +46,7 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    public ResUpdateUserDTO updateUser(User userData) {
+    public ResUpdateUserDTO updateUser(User userData) throws ResourceNotFoundException {
         User user = findUser(userData.getId());
         if (user != null) {
             user.setName(userData.getName());
@@ -57,9 +58,9 @@ public class UserService {
             BeanUtils.copyProperties(updatedUser, resUpdateUserDTO);
 
             return resUpdateUserDTO;
+        } else {
+            throw new ResourceNotFoundException("User not found");
         }
-
-        return null;
     }
 
     public ResCreateUserDTO createUser(User userData) throws BadRequestException {
