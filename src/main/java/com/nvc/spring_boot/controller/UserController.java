@@ -47,7 +47,7 @@ public class UserController {
     
     @PostMapping("/users")
     @ApiMessage("create new user")
-    public ResponseEntity<ResCreateUserDTO> createUser(@RequestBody User user) {
+    public ResponseEntity<ResCreateUserDTO> createUser(@RequestBody User user)  {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
     }
 
@@ -55,6 +55,6 @@ public class UserController {
     @ApiMessage("delete user")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id){
         userService.deleteUser(id);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
     }
 }
