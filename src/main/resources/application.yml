@@ -26,7 +26,9 @@ spring:
 
 jwt:
   base64-secret: 2ZfCLkmZQa8jh294Db6W4lS1InE5E7Lcyo3QtJQmmvM/j0+V5/stHDXi+OuboWOiAQprw5GxF29WCQfw2DKXGA==
-  expiration: 86400
+  expiration:
+    access-token: 18000
+    refresh-token: 2592000
 
 logging:
   level:

@@ -6,11 +6,12 @@ import lombok.Data;
 import java.time.Instant;
 
 @Data
-public class ResCreateUserDTO {
+public class ResUserDTO {
     private Long id;
     private String name;
     private String email;
     private Gender gender;
     private String address;
     private Instant createdAt;
+    private Instant updatedAt;
 }

@@ -24,8 +24,9 @@ public class User {
 
     private String address;
 
-    @JsonIgnore
+    @Column(columnDefinition = "TEXT")
     private String refreshToken;
+
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;

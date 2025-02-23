@@ -1,42 +1,40 @@
 package com.nvc.spring_boot.controller;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nvc.spring_boot.domain.dto.LoginDTO;
 import com.nvc.spring_boot.domain.dto.ResLoginDTO;
-import com.nvc.spring_boot.util.SecurityUtil;
+import com.nvc.spring_boot.service.AuthService;
 
 import jakarta.validation.Valid;
 
+import java.util.Map;
+
 @RestController
 public class AuthController {
-    private final SecurityUtil securityUtil;
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    @Value("${jwt.expiration.refresh-token}")
+    private Long refreshTokenExpiration;
 
-    public AuthController(SecurityUtil securityUtil, AuthenticationManagerBuilder authenticationManagerBuilder) {
-        this.securityUtil = securityUtil;
-        this.authenticationManagerBuilder = authenticationManagerBuilder;
+    private final AuthService authService;
+
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
     @PostMapping("/login")
     public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody LoginDTO loginDto) {
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                loginDto.getUsername(), loginDto.getPassword());
-                
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        Map<String, Object> result = authService.login(loginDto);
+        ResLoginDTO resLogin = (ResLoginDTO) result.get("resLogin");
+        String refreshToken = (String) result.get("refreshToken");
 
-        String accessToken = securityUtil.createToken(authentication);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        
-        ResLoginDTO res = new ResLoginDTO();
-        res.setAccessToken(accessToken);
-        return ResponseEntity.ok().body(res);
+        //set cookies
+        ResponseCookie responseCookie = ResponseCookie.from("refresh_token", refreshToken).httpOnly(true).secure(true).path("/").maxAge(refreshTokenExpiration).build();
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(resLogin);
     }
 }
