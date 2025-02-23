@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
+import com.nvc.spring_boot.domain.dto.ResLoginDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -13,15 +14,16 @@ import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-
 @Service
 public class SecurityUtil {
     @Value("${jwt.base64-secret}")
     private String jwtSecret;
 
-    @Value("${jwt.expiration}")
-    private Long jwtExpiration;
+    @Value("${jwt.expiration.access-token}")
+    private Long accessTokenExpiration;
+
+    @Value("${jwt.expiration.refresh-token}")
+    private Long refreshTokenExpiration;
 
     private final JwtEncoder jwtEncoder;
     public static final MacAlgorithm JWT_ALGORITHM = MacAlgorithm.HS512;
@@ -30,15 +32,30 @@ public class SecurityUtil {
         this.jwtEncoder = jwtEncoder;
     }
 
-    public String createToken(Authentication authentication) {
+    public String createAccessToken(Authentication authentication) {
         Instant now = Instant.now();
-        Instant validity = now.plus(jwtExpiration, ChronoUnit.SECONDS);
+        Instant validity = now.plus(accessTokenExpiration, ChronoUnit.SECONDS);
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(validity)
                 .subject(authentication.getName())
                 .claim("nvc", authentication)
+                .build();
+
+        JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
+    }
+
+    public String createRefreshToken(String email, ResLoginDTO resLoginDTO) {
+        Instant now = Instant.now();
+        Instant validity = now.plus(refreshTokenExpiration, ChronoUnit.SECONDS);
+
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuedAt(now)
+                .expiresAt(validity)
+                .subject(email)
+                .claim("user", resLoginDTO.getUser())
                 .build();
 
         JwsHeader jwsHeader = JwsHeader.with(JWT_ALGORITHM).build();
@@ -62,5 +79,4 @@ public class SecurityUtil {
         }
         return null;
     }
-
 }

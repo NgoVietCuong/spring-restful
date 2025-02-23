@@ -1,10 +1,8 @@
 package com.nvc.spring_boot.domain.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class MetaDTO {
     private int currentPage;
     private int itemsPerPage;

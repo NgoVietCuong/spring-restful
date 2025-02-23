@@ -1,7 +1,7 @@
 ALTER TABLE users
 ADD COLUMN gender VARCHAR(255),
 ADD COLUMN address VARCHAR(255),
-ADD COLUMN refresh_token VARCHAR(255),
+ADD COLUMN refresh_token TEXT,
 ADD COLUMN created_at TIMESTAMP,
 ADD COLUMN updated_at TIMESTAMP,
 ADD COLUMN created_by VARCHAR(255),

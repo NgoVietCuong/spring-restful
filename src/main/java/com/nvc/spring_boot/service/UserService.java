@@ -1,7 +1,11 @@
 package com.nvc.spring_boot.service;
 
+import com.nvc.spring_boot.domain.dto.*;
 import com.nvc.spring_boot.util.error.BadRequestException;
 import com.nvc.spring_boot.util.error.ResourceNotFoundException;
+import com.nvc.spring_boot.domain.User;
+import com.nvc.spring_boot.repository.UserRepository;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,12 +13,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.nvc.spring_boot.domain.dto.MetaDTO;
-import com.nvc.spring_boot.domain.dto.PaginationDTO;
-import com.nvc.spring_boot.domain.dto.ResCreateUserDTO;
-import com.nvc.spring_boot.domain.dto.ResUpdateUserDTO;
-import com.nvc.spring_boot.domain.User;
-import com.nvc.spring_boot.repository.UserRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -36,8 +36,13 @@ public class UserService {
         meta.setTotalPages(pageUser.getTotalPages());
         meta.setTotalItems(pageUser.getTotalElements());
 
+        List<ResUserDTO> resUsers = pageUser.getContent().stream().map(item -> {
+            ResUserDTO resUser = new ResUserDTO();
+            BeanUtils.copyProperties(item, resUser);
+            return resUser;
+        }).collect(Collectors.toList());
         result.setMeta(meta);
-        result.setContent(pageUser.getContent());
+        result.setContent(resUsers);
 
         return result;
     }
@@ -81,8 +86,12 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public User findUserByUsername(String username) {
-        return userRepository.findByEmail(username);
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
+    public void updateUserToken(User user, String token) {
+        user.setRefreshToken(token);
+        userRepository.save(user);
+    }
 }
