@@ -1,5 +1,6 @@
 package com.nvc.spring_boot.controller;
 
+import com.nvc.spring_boot.util.annotation.ApiMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -27,6 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @ApiMessage("Login with email and password")
     public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody LoginDTO loginDto) {
         Map<String, Object> result = authService.login(loginDto);
         ResLoginDTO resLogin = (ResLoginDTO) result.get("resLogin");
@@ -42,7 +44,14 @@ public class AuthController {
     }
 
     @GetMapping("/account")
+    @ApiMessage("Get current user account")
     public ResponseEntity<ResLoginDTO.UserLogin> account() {
         return ResponseEntity.ok(authService.getAccount());
+    }
+
+    @PostMapping("/refresh")
+    @ApiMessage("Refresh token")
+    public ResponseEntity<String> refreshToken(@CookieValue(name="refresh_token") String refreshToken) {
+        return ResponseEntity.ok(refreshToken);
     }
 }
