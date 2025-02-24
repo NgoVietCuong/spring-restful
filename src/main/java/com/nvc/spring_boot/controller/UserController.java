@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import com.nvc.spring_boot.domain.User;
 import com.nvc.spring_boot.service.UserService;
-import com.nvc.spring_boot.util.error.BadRequestException;
 
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
 
@@ -24,7 +24,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/users/list")
+    @GetMapping("/list")
     @ApiMessage("get user list")
     public ResponseEntity<PaginationDTO> getList(
             @Filter Specification<User> specification,
@@ -33,25 +33,25 @@ public class UserController {
         return ResponseEntity.ok(userService.getList(specification, pageable));
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     @ApiMessage("get user info")
     public ResponseEntity<User> findUser(@PathVariable("id") Long id) {
         return ResponseEntity.ok(userService.findUser(id));
     }
 
-    @PutMapping("/users")
+    @PutMapping()
     @ApiMessage("update user info")
     public ResponseEntity<ResUpdateUserDTO> updateUser(@RequestBody User user) {
         return ResponseEntity.ok(userService.updateUser(user));
     }
     
-    @PostMapping("/users")
+    @PostMapping()
     @ApiMessage("create new user")
     public ResponseEntity<ResCreateUserDTO> createUser(@RequestBody User user)  {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
     }
 
-    @DeleteMapping("/users/{id}")
+    @DeleteMapping("/{id}")
     @ApiMessage("delete user")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id){
         userService.deleteUser(id);

@@ -5,6 +5,7 @@ import com.nvc.spring_boot.domain.dto.LoginDTO;
 import com.nvc.spring_boot.domain.dto.ResLoginDTO;
 import com.nvc.spring_boot.util.SecurityUtil;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -35,12 +36,13 @@ public class AuthService {
 
         ResLoginDTO resLogin = new ResLoginDTO();
 
-        String accessToken = securityUtil.createAccessToken(authentication);
-        resLogin.setAccessToken(accessToken);
-
         User user = userService.findUserByEmail(loginDto.getEmail());
         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(user.getId(), user.getName(), user.getEmail());
         resLogin.setUser(userLogin);
+
+        //create access token
+        String accessToken = securityUtil.createAccessToken(authentication, resLogin);
+        resLogin.setAccessToken(accessToken);
 
         // create refresh token and update user
         String refreshToken = securityUtil.createRefreshToken(loginDto.getEmail(), resLogin);
@@ -51,5 +53,16 @@ public class AuthService {
         result.put("refreshToken", refreshToken);
 
         return result;
+    }
+
+    public ResLoginDTO.UserLogin getAccount() {
+        String email = securityUtil.getCurrentUserLogin().isPresent() ? securityUtil.getCurrentUserLogin().get() : "";
+        User user = userService.findUserByEmail(email);
+        ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin();
+        if (user != null) {
+            BeanUtils.copyProperties(user, userLogin);
+        }
+
+        return userLogin;
     }
 }
