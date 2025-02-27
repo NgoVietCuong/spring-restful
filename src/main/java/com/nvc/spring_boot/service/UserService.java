@@ -86,12 +86,16 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    public void updateUserToken(User user, String token) {
+        user.setRefreshToken(token);
+        userRepository.save(user);
+    }
+
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
 
-    public void updateUserToken(User user, String token) {
-        user.setRefreshToken(token);
-        userRepository.save(user);
+    public User findUserByEmailAndRefreshToken(String email, String token) {
+        return userRepository.findByEmailAndRefreshToken(email, token);
     }
 }

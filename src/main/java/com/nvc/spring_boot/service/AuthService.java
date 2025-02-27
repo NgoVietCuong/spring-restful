@@ -5,11 +5,13 @@ import com.nvc.spring_boot.domain.dto.LoginDTO;
 import com.nvc.spring_boot.domain.dto.ResLoginDTO;
 import com.nvc.spring_boot.util.SecurityUtil;
 
+import com.nvc.spring_boot.util.error.ResourceNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -41,7 +43,7 @@ public class AuthService {
         resLogin.setUser(userLogin);
 
         //create access token
-        String accessToken = securityUtil.createAccessToken(authentication, resLogin);
+        String accessToken = securityUtil.createAccessToken(authentication.getName(), resLogin);
         resLogin.setAccessToken(accessToken);
 
         // create refresh token and update user
@@ -64,5 +66,35 @@ public class AuthService {
         }
 
         return userLogin;
+    }
+
+    public Map<String, Object> refreshToken(String token) throws ResourceNotFoundException {
+        Jwt jwt = securityUtil.checkValidRefreshToken(token);
+        String email = jwt.getSubject();
+
+        //check user by email and refresh token
+        User user = userService.findUserByEmailAndRefreshToken(email, token);
+        if (user == null) {
+            ResLoginDTO resLogin = new ResLoginDTO();
+
+            ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(user.getId(), user.getName(), user.getEmail());
+            resLogin.setUser(userLogin);
+
+            //create access token
+            String accessToken = securityUtil.createAccessToken(email, resLogin);
+            resLogin.setAccessToken(accessToken);
+
+            // create refresh token and update user
+            String newRefreshToken = securityUtil.createRefreshToken(email, resLogin);
+            userService.updateUserToken(user, newRefreshToken);
+
+            Map<String, Object> result =  new HashMap<>();
+            result.put("resLogin", resLogin);
+            result.put("refreshToken", newRefreshToken);
+
+            return result;
+        } else {
+            throw new ResourceNotFoundException("User not found");
+        }
     }
 }
