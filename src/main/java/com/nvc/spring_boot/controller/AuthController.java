@@ -51,7 +51,17 @@ public class AuthController {
 
     @PostMapping("/refresh")
     @ApiMessage("Refresh token")
-    public ResponseEntity<String> refreshToken(@CookieValue(name="refresh_token") String refreshToken) {
-        return ResponseEntity.ok(refreshToken);
+    public ResponseEntity<ResLoginDTO> refreshToken(@CookieValue(name="refresh_token") String token) {
+        Map<String, Object> result = authService.refreshToken(token);
+        ResLoginDTO resLogin = (ResLoginDTO) result.get("resLogin");
+        String refreshToken = (String) result.get("refreshToken");
+
+        //set cookies
+        ResponseCookie responseCookie = ResponseCookie.from("refresh_token", refreshToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(refreshTokenExpiration).build();
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(resLogin);
     }
 }
