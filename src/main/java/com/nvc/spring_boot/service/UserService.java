@@ -1,6 +1,9 @@
 package com.nvc.spring_boot.service;
 
-import com.nvc.spring_boot.domain.dto.*;
+import com.nvc.spring_boot.domain.response.PaginationDTO;
+import com.nvc.spring_boot.domain.response.ResCreateUserDTO;
+import com.nvc.spring_boot.domain.response.ResUpdateUserDTO;
+import com.nvc.spring_boot.domain.response.ResUserDTO;
 import com.nvc.spring_boot.util.error.BadRequestException;
 import com.nvc.spring_boot.util.error.ResourceNotFoundException;
 import com.nvc.spring_boot.domain.User;
@@ -29,7 +32,7 @@ public class UserService {
     public PaginationDTO getList(Specification<User> specification, Pageable pageable) {
         Page<User> pageUser = userRepository.findAll(specification, pageable);
         PaginationDTO result = new PaginationDTO();
-        MetaDTO meta = new MetaDTO();
+        PaginationDTO.MetaDTO meta = new PaginationDTO.MetaDTO();
 
         meta.setCurrentPage(pageable.getPageNumber() + 1);
         meta.setItemsPerPage(pageable.getPageSize());

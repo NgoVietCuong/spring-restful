@@ -1,8 +1,8 @@
 package com.nvc.spring_boot.service;
 
 import com.nvc.spring_boot.domain.User;
-import com.nvc.spring_boot.domain.dto.LoginDTO;
-import com.nvc.spring_boot.domain.dto.ResLoginDTO;
+import com.nvc.spring_boot.domain.request.ReqLoginDTO;
+import com.nvc.spring_boot.domain.response.ResLoginDTO;
 import com.nvc.spring_boot.util.SecurityUtil;
 
 import com.nvc.spring_boot.util.error.ResourceNotFoundException;
@@ -29,16 +29,16 @@ public class AuthService {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
     }
 
-    public Map<String, Object> login(LoginDTO loginDto) {
+    public Map<String, Object> login(ReqLoginDTO reqLoginDto) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                loginDto.getEmail(), loginDto.getPassword());
+                reqLoginDto.getEmail(), reqLoginDto.getPassword());
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         ResLoginDTO resLogin = new ResLoginDTO();
 
-        User user = userService.findUserByEmail(loginDto.getEmail());
+        User user = userService.findUserByEmail(reqLoginDto.getEmail());
         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(user.getId(), user.getName(), user.getEmail());
         resLogin.setUser(userLogin);
 
@@ -47,7 +47,7 @@ public class AuthService {
         resLogin.setAccessToken(accessToken);
 
         // create refresh token and update user
-        String refreshToken = securityUtil.createRefreshToken(loginDto.getEmail(), resLogin);
+        String refreshToken = securityUtil.createRefreshToken(reqLoginDto.getEmail(), resLogin);
         userService.updateUserToken(user, refreshToken);
 
         Map<String, Object> result =  new HashMap<>();
