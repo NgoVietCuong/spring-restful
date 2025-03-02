@@ -1,7 +1,8 @@
-package com.nvc.spring_boot.service;
+package com.nvc.spring_boot.config;
 
 import java.util.Collections;
 
+import com.nvc.spring_boot.service.UserService;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

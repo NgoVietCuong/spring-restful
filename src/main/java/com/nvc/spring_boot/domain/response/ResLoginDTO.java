@@ -1,4 +1,4 @@
-package com.nvc.spring_boot.domain.dto;
+package com.nvc.spring_boot.domain.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

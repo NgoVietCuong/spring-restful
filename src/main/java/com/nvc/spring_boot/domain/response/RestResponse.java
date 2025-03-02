@@ -1,4 +1,4 @@
-package com.nvc.spring_boot.domain;
+package com.nvc.spring_boot.domain.response;
 
 import lombok.Data;
 

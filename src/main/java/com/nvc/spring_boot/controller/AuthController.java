@@ -7,8 +7,8 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.nvc.spring_boot.domain.dto.LoginDTO;
-import com.nvc.spring_boot.domain.dto.ResLoginDTO;
+import com.nvc.spring_boot.domain.request.ReqLoginDTO;
+import com.nvc.spring_boot.domain.response.ResLoginDTO;
 import com.nvc.spring_boot.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -29,8 +29,8 @@ public class AuthController {
 
     @PostMapping("/login")
     @ApiMessage("Login with email and password")
-    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody LoginDTO loginDto) {
-        Map<String, Object> result = authService.login(loginDto);
+    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody ReqLoginDTO reqLoginDto) {
+        Map<String, Object> result = authService.login(reqLoginDto);
         ResLoginDTO resLogin = (ResLoginDTO) result.get("resLogin");
         String refreshToken = (String) result.get("refreshToken");
 

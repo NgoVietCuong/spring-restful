@@ -1,8 +1,8 @@
 package com.nvc.spring_boot.controller;
 
-import com.nvc.spring_boot.domain.dto.PaginationDTO;
-import com.nvc.spring_boot.domain.dto.ResCreateUserDTO;
-import com.nvc.spring_boot.domain.dto.ResUpdateUserDTO;
+import com.nvc.spring_boot.domain.response.PaginationDTO;
+import com.nvc.spring_boot.domain.response.ResCreateUserDTO;
+import com.nvc.spring_boot.domain.response.ResUpdateUserDTO;
 import com.nvc.spring_boot.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
 import org.springframework.data.domain.Pageable;
