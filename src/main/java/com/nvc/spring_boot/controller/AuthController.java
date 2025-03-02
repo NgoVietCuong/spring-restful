@@ -64,4 +64,18 @@ public class AuthController {
                 .maxAge(refreshTokenExpiration).build();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(resLogin);
     }
+
+    @PostMapping("/logout")
+    @ApiMessage("Logout")
+    public ResponseEntity<Void> logout() {
+        authService.logout();
+
+        //delete cookies
+        ResponseCookie responseCookie = ResponseCookie.from("refresh_token", null)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(0).build();
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, responseCookie.toString()).body(null);
+    }
 }

@@ -75,26 +75,32 @@ public class AuthService {
         //check user by email and refresh token
         User user = userService.findUserByEmailAndRefreshToken(email, token);
         if (user == null) {
-            ResLoginDTO resLogin = new ResLoginDTO();
-
-            ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(user.getId(), user.getName(), user.getEmail());
-            resLogin.setUser(userLogin);
-
-            //create access token
-            String accessToken = securityUtil.createAccessToken(email, resLogin);
-            resLogin.setAccessToken(accessToken);
-
-            // create refresh token and update user
-            String newRefreshToken = securityUtil.createRefreshToken(email, resLogin);
-            userService.updateUserToken(user, newRefreshToken);
-
-            Map<String, Object> result =  new HashMap<>();
-            result.put("resLogin", resLogin);
-            result.put("refreshToken", newRefreshToken);
-
-            return result;
-        } else {
             throw new ResourceNotFoundException("User not found");
         }
+
+        ResLoginDTO resLogin = new ResLoginDTO();
+
+        ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(user.getId(), user.getName(), user.getEmail());
+        resLogin.setUser(userLogin);
+
+        //create access token
+        String accessToken = securityUtil.createAccessToken(email, resLogin);
+        resLogin.setAccessToken(accessToken);
+
+        // create refresh token and update user
+        String newRefreshToken = securityUtil.createRefreshToken(email, resLogin);
+        userService.updateUserToken(user, newRefreshToken);
+
+        Map<String, Object> result =  new HashMap<>();
+        result.put("resLogin", resLogin);
+        result.put("refreshToken", newRefreshToken);
+
+        return result;
+    }
+
+    public void logout() {
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
+        User user = userService.findUserByEmail(email);
+        userService.updateUserToken(user, null);
     }
 }
