@@ -9,4 +9,4 @@ CREATE TABLE IF NOT EXISTS companies
     updated_at TIMESTAMP,
     created_by VARCHAR(255),
     updated_by VARCHAR(255)
-);
+)
