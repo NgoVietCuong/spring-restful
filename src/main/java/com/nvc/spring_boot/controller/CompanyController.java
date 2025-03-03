@@ -3,6 +3,7 @@ package com.nvc.spring_boot.controller;
 import com.nvc.spring_boot.domain.response.PaginationDTO;
 import com.nvc.spring_boot.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -15,6 +16,7 @@ import com.nvc.spring_boot.service.CompanyService;
 
 
 @RestController
+@RequestMapping("/companies")
 public class CompanyController {
     private final CompanyService companyService;
 
@@ -22,7 +24,7 @@ public class CompanyController {
         this.companyService = companyService;
     }
 
-    @GetMapping("/companies/list")
+    @GetMapping("/list")
     @ApiMessage("get company list")
     public ResponseEntity<PaginationDTO> getList(
            @Filter Specification<Company> specification,
@@ -31,26 +33,27 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.getList(specification, pageable));
     }
 
-    @GetMapping("/companies/{id}")
+    @GetMapping("/{id}")
     @ApiMessage("get company info")
     public ResponseEntity<Company> findCompany(@PathVariable("id") Long id) {
         return ResponseEntity.ok(companyService.findCompany(id));
     }
 
-    @PutMapping("/companies")
+    @PutMapping()
     @ApiMessage("update company info")
     public ResponseEntity<Company> updateCompany(@Valid @RequestBody Company company) {
         return ResponseEntity.ok(companyService.updateCompany(company));
     }
 
-    @PostMapping("/companies")
+    @PostMapping()
     @ApiMessage("create new company")
     public ResponseEntity<Company> createCompany(@Valid @RequestBody Company company) {
         return ResponseEntity.status(HttpStatus.CREATED).body(companyService.createCompany(company));
     }
 
-    @DeleteMapping("/companies/{id}")
+    @DeleteMapping("/{id}")
     @ApiMessage("delete company")
+    @Transactional
     public ResponseEntity<Void> deleteCompany(@PathVariable("id") Long id) {
         companyService.deleteCompany(id);
         return ResponseEntity.ok(null);

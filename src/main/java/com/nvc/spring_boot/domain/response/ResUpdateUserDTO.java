@@ -12,4 +12,11 @@ public class ResUpdateUserDTO {
     private Gender gender;
     private String address;
     private Instant updatedAt;
+    private UserCompany company;
+
+    @Data
+    public static class UserCompany {
+        private Long id;
+        private String name;
+    }
 }

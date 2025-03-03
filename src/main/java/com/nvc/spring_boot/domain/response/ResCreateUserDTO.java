@@ -13,4 +13,11 @@ public class ResCreateUserDTO {
     private Gender gender;
     private String address;
     private Instant createdAt;
+    private UserCompany company;
+
+    @Data
+    public static class UserCompany {
+        private Long id;
+        private String name;
+    }
 }

@@ -1,5 +1,6 @@
 package com.nvc.spring_boot.repository;
 
+import com.nvc.spring_boot.domain.Company;
 import com.nvc.spring_boot.domain.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,4 +12,6 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     User findByEmail(String email);
     Boolean existsByEmail(String email);
     User findByEmailAndRefreshToken(String email, String token);
+    User findByCompany(Company company);
+    void deleteAllByCompany(Company company);
 }
