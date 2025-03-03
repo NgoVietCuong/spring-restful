@@ -1,6 +1,5 @@
 package com.nvc.spring_boot.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nvc.spring_boot.util.constant.Gender;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -31,6 +30,10 @@ public class User {
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     @PrePersist()
     public void handleBeforePersist() {

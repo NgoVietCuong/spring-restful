@@ -3,8 +3,10 @@ package com.nvc.spring_boot.controller;
 import com.nvc.spring_boot.domain.response.PaginationDTO;
 import com.nvc.spring_boot.domain.response.ResCreateUserDTO;
 import com.nvc.spring_boot.domain.response.ResUpdateUserDTO;
+import com.nvc.spring_boot.domain.response.ResUserDTO;
 import com.nvc.spring_boot.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -35,7 +37,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ApiMessage("get user info")
-    public ResponseEntity<User> findUser(@PathVariable("id") Long id) {
+    public ResponseEntity<ResUserDTO> findUser(@PathVariable("id") Long id) {
         return ResponseEntity.ok(userService.findUser(id));
     }
 
@@ -53,6 +55,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @ApiMessage("delete user")
+    @Transactional
     public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id){
         userService.deleteUser(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);

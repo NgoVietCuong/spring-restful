@@ -1,9 +1,11 @@
 package com.nvc.spring_boot.service;
 
+import com.nvc.spring_boot.domain.Company;
 import com.nvc.spring_boot.domain.response.PaginationDTO;
 import com.nvc.spring_boot.domain.response.ResCreateUserDTO;
 import com.nvc.spring_boot.domain.response.ResUpdateUserDTO;
 import com.nvc.spring_boot.domain.response.ResUserDTO;
+import com.nvc.spring_boot.repository.CompanyRepository;
 import com.nvc.spring_boot.util.error.BadRequestException;
 import com.nvc.spring_boot.util.error.ResourceNotFoundException;
 import com.nvc.spring_boot.domain.User;
@@ -13,6 +15,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +25,12 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private final CompanyRepository companyRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CompanyRepository companyRepository) {
         this.userRepository = userRepository;
+        this.companyRepository = companyRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -42,6 +47,14 @@ public class UserService {
         List<ResUserDTO> resUsers = pageUser.getContent().stream().map(item -> {
             ResUserDTO resUser = new ResUserDTO();
             BeanUtils.copyProperties(item, resUser);
+
+            ResUserDTO.UserCompany userCompany = new ResUserDTO.UserCompany();
+            resUser.setCompany(item.getCompany() != null ? userCompany : null);
+
+            if (item.getCompany() != null) {
+                BeanUtils.copyProperties(item.getCompany(), resUser.getCompany());
+            }
+
             return resUser;
         }).collect(Collectors.toList());
         result.setMeta(meta);
@@ -50,22 +63,50 @@ public class UserService {
         return result;
     }
 
-    public User findUser(Long id) {
-        return userRepository.findById(id).orElse(null);
+    public ResUserDTO findUser(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+
+        if (user != null) {
+            ResUserDTO resUser = new ResUserDTO();
+            BeanUtils.copyProperties(user, resUser);
+
+            ResUserDTO.UserCompany userCompany = new ResUserDTO.UserCompany();
+            resUser.setCompany(user.getCompany() != null ? userCompany : null);
+
+            if (user.getCompany() != null) {
+                BeanUtils.copyProperties(user.getCompany(), resUser.getCompany());
+            }
+
+            return resUser;
+        }
+
+        return null;
     }
 
     public ResUpdateUserDTO updateUser(User userData) throws ResourceNotFoundException {
-        User user = findUser(userData.getId());
+        User user = userRepository.findById(userData.getId()).orElse(null);
         if (user != null) {
             user.setName(userData.getName());
             user.setGender(userData.getGender());
             user.setAddress(userData.getAddress());
 
+            if (userData.getCompany() != null) {
+                Company company = companyRepository.findById(userData.getCompany().getId()).orElse(null);
+                user.setCompany(company);
+            }
             User updatedUser = userRepository.save(user);
-            ResUpdateUserDTO resUpdateUserDTO = new ResUpdateUserDTO();
-            BeanUtils.copyProperties(updatedUser, resUpdateUserDTO);
 
-            return resUpdateUserDTO;
+            ResUpdateUserDTO resUpdateUser = new ResUpdateUserDTO();
+            BeanUtils.copyProperties(updatedUser, resUpdateUser);
+
+            ResUpdateUserDTO.UserCompany userCompany = new ResUpdateUserDTO.UserCompany();
+            resUpdateUser.setCompany(updatedUser.getCompany() != null ? userCompany : null);
+
+            if (updatedUser.getCompany() != null) {
+                BeanUtils.copyProperties(updatedUser.getCompany(), resUpdateUser.getCompany());
+            }
+
+            return resUpdateUser;
         } else {
             throw new ResourceNotFoundException("User not found");
         }
@@ -77,11 +118,24 @@ public class UserService {
             throw new BadRequestException("Email already exists");
         }
 
+        if (userData.getCompany() != null) {
+            Company company = companyRepository.findById(userData.getCompany().getId()).orElse(null);
+            userData.setCompany(company);
+        }
+
         userData.setPassword(passwordEncoder.encode(userData.getPassword()));
         User newUser = userRepository.save(userData);
 
         ResCreateUserDTO resCreateUser = new ResCreateUserDTO();
         BeanUtils.copyProperties(newUser, resCreateUser);
+
+        ResCreateUserDTO.UserCompany userCompany = new ResCreateUserDTO.UserCompany();
+        resCreateUser.setCompany(newUser.getCompany() != null ? userCompany : null);
+
+        if (newUser.getCompany() != null) {
+            BeanUtils.copyProperties(newUser.getCompany(), resCreateUser.getCompany());
+        }
+
         return resCreateUser;
     }
 

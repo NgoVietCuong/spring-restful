@@ -3,6 +3,7 @@ package com.nvc.spring_boot.service;
 import com.nvc.spring_boot.domain.Company;
 import com.nvc.spring_boot.domain.response.PaginationDTO;
 import com.nvc.spring_boot.repository.CompanyRepository;
+import com.nvc.spring_boot.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -11,9 +12,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class CompanyService {
     private final CompanyRepository companyRepository;
+    private final UserRepository userRepository;
 
-    public CompanyService(CompanyRepository companyRepository) {
+    public CompanyService(CompanyRepository companyRepository, UserRepository userRepository) {
         this.companyRepository = companyRepository;
+        this.userRepository = userRepository;
     }
 
     public PaginationDTO getList(Specification<Company> specification, Pageable pageable) {
@@ -54,6 +57,10 @@ public class CompanyService {
     }
 
     public void deleteCompany(Long id) {
+        Company company = findCompany(id);
+        if (company != null) {
+            userRepository.deleteAllByCompany(company);
+        }
         companyRepository.deleteById(id);
     }
 }
