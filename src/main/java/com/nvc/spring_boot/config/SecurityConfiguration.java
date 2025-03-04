@@ -23,7 +23,7 @@ public class SecurityConfiguration {
         http
                 .csrf(c -> c.disable())
                 .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(authz -> authz.requestMatchers("/auth/login", "/auth/refresh").permitAll()
+                .authorizeHttpRequests(authz -> authz.requestMatchers( "/auth/login", "/auth/refresh").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
