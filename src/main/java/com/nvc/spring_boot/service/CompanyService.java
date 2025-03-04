@@ -4,6 +4,7 @@ import com.nvc.spring_boot.domain.Company;
 import com.nvc.spring_boot.domain.response.PaginationDTO;
 import com.nvc.spring_boot.repository.CompanyRepository;
 import com.nvc.spring_boot.repository.UserRepository;
+import com.nvc.spring_boot.util.error.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -39,17 +40,18 @@ public class CompanyService {
         return companyRepository.findById(id).orElse(null);
     }
 
-    public Company updateCompany(Company companyData) {
+    public Company updateCompany(Company companyData) throws ResourceNotFoundException {
         Company company = findCompany(companyData.getId());
         if (company != null) {
             company.setName(companyData.getName());
             company.setDescription(companyData.getDescription());
             company.setAddress(companyData.getAddress());
             company.setLogo(companyData.getLogo());
-            companyRepository.save(company);
-        }
 
-        return company;
+            return companyRepository.save(company);
+        } else {
+            throw new ResourceNotFoundException("Company not found");
+        }
     }
 
     public Company createCompany(Company company) {
