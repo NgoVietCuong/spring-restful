@@ -77,4 +77,8 @@ public class JobService {
         job.setSkills(skills);
         return jobRepository.save(job);
     }
+
+    public void deleteJob(Long id) {
+        jobRepository.deleteById(id);
+    }
 }

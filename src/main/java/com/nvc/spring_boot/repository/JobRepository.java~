@@ -1,6 +1,5 @@
 package com.nvc.spring_boot.repository;
 
-import com.nvc.spring_boot.domain.Company;
 import com.nvc.spring_boot.domain.Job;
 import com.nvc.spring_boot.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
