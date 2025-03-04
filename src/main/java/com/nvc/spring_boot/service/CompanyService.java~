@@ -65,7 +65,7 @@ public class CompanyService {
         Company company = findCompany(id);
         if (company != null) {
             userRepository.deleteAllByCompany(company);
-            jobRepository.deleteAllByCompany(company);
+            jobRepository.de
         }
         companyRepository.deleteById(id);
     }
