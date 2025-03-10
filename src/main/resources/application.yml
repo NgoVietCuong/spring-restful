@@ -23,12 +23,19 @@ spring:
     web:
       pageable:
         one-indexed-parameters: true
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
 
 jwt:
   base64-secret: 2ZfCLkmZQa8jh294Db6W4lS1InE5E7Lcyo3QtJQmmvM/j0+V5/stHDXi+OuboWOiAQprw5GxF29WCQfw2DKXGA==
   expiration:
     access-token: 18000
     refresh-token: 2592000
+
+upload-file:
+  base-uri: ${BASE_PATH}
 
 logging:
   level:
