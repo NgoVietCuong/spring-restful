@@ -45,4 +45,16 @@ public class GlobalException {
 
         return ResponseEntity.badRequest().body(res);
     }
+
+    //validate file
+    @ExceptionHandler(value = {
+            FileUploadException.class,
+    })
+    public ResponseEntity<Object> handleFileUploadException(Exception ex) {
+        RestResponse<Object> res = new RestResponse<Object>();
+        res.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        res.setError(ex.getMessage());
+        res.setMessage("Exception upload file...");
+        return ResponseEntity.badRequest().body(res);
+    }
 }
