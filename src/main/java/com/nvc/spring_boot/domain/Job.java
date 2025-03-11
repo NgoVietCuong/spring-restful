@@ -1,5 +1,6 @@
 package com.nvc.spring_boot.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.nvc.spring_boot.util.constant.Level;
 import jakarta.persistence.*;
@@ -53,6 +54,10 @@ public class Job {
             inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
     List<Skill> skills;
+
+    @OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Resume> resumes;
 
     @PrePersist()
     public void handleBeforePersist() {
