@@ -17,8 +17,8 @@ public class ResumeService {
         this.resumeRepository = resumeRepository;
     }
 
-    public PaginationDTO getList(Specification<Resume> specification, Pageable pageable) {
-        Page<Resume> pageCompany = resumeRepository.findAll(specification, pageable);
+    public PaginationDTO getList(Specification<Skill> specification, Pageable pageable) {
+        Page<Skill> pageCompany = resumeRepository.findAll(specification, pageable);
         PaginationDTO result = new PaginationDTO();
         PaginationDTO.MetaDTO meta = new PaginationDTO.MetaDTO();
 
