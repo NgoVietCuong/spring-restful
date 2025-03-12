@@ -23,13 +23,13 @@ public class ResumeController {
         this.resumeService = resumeService;
     }
 
-    @GetMapping("/list")
-    @ApiMessage("get resume list")
-    public ResponseEntity<PaginationDTO> getList(
-            @Filter Specification<Resume> specification,
-            Pageable pageable) {
-        return ResponseEntity.ok(resumeService.getList(specification, pageable));
-    }
+//    @GetMapping("/list")
+//    @ApiMessage("get skill list")
+//    public ResponseEntity<PaginationDTO> getList(
+//            @Filter Specification<Skill> specification,
+//            Pageable pageable) {
+//        return ResponseEntity.ok(resumeService.getList(specification, pageable));
+//    }
 
     @GetMapping("/{id}")
     @ApiMessage("get resume info")
