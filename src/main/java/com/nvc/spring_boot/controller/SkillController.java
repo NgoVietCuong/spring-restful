@@ -1,7 +1,7 @@
 package com.nvc.spring_boot.controller;
 
 import com.nvc.spring_boot.entity.Skill;
-import com.nvc.spring_boot.dto.PaginationDTO;
+import com.nvc.spring_boot.dto.PaginationResponse;
 import com.nvc.spring_boot.service.SkillService;
 import com.nvc.spring_boot.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
@@ -24,7 +24,7 @@ public class SkillController {
 
     @GetMapping("/list")
     @ApiMessage("get skill list")
-    public ResponseEntity<PaginationDTO> getList(
+    public ResponseEntity<PaginationResponse> getList(
             @Filter Specification<Skill> specification,
             Pageable pageable) {
         return ResponseEntity.ok(skillService.getList(specification, pageable));

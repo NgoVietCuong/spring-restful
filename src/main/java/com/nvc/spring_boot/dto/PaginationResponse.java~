@@ -1,13 +1,16 @@
 package com.nvc.spring_boot.dto;
 
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class PaginationDTO {
+@Builder()
+public class PaginationResponse {
     private MetaDTO meta;
     private Object content;
 
     @Data
+    @Builder()
     public static class MetaDTO {
         private int currentPage;
         private int itemsPerPage;

@@ -19,18 +19,19 @@ public class SkillService {
     }
 
     public PaginationResponse getList(Specification<Skill> specification, Pageable pageable) {
-        Page<Skill> pageSkill = skillRepository.findAll(specification, pageable);
-        PaginationResponse.PaginationMeta meta = PaginationResponse.PaginationMeta.builder()
-                .currentPage(pageable.getPageNumber() + 1)
-                .itemsPerPage(pageable.getPageSize())
-                .totalPages(pageSkill.getTotalPages())
-                .totalItems(pageSkill.getTotalElements())
-                .build();
+        Page<Skill> pageCompany = skillRepository.findAll(specification, pageable);
+        PaginationResponse result = new PaginationResponse();
+        PaginationResponse.MetaDTO meta = new PaginationResponse.MetaDTO();
 
-        return PaginationResponse.builder()
-                .meta(meta)
-                .content(pageSkill.getContent())
-                .build();
+        meta.setCurrentPage(pageable.getPageNumber() + 1);
+        meta.setItemsPerPage(pageable.getPageSize());
+        meta.setTotalPages(pageCompany.getTotalPages());
+        meta.setTotalItems(pageCompany.getTotalElements());
+
+        result.setMeta(meta);
+        result.setContent(pageCompany.getContent());
+
+        return result;
     }
 
     public Skill findSkill(Long id) {

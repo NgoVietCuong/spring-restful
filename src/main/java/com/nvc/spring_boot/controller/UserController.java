@@ -1,13 +1,15 @@
 package com.nvc.spring_boot.controller;
 
-import com.nvc.spring_boot.dto.PaginationDTO;
+import com.nvc.spring_boot.dto.PaginationResponse;
 import com.nvc.spring_boot.dto.user.request.CreateUserRequest;
+import com.nvc.spring_boot.dto.user.request.UpdateUserRequest;
 import com.nvc.spring_boot.dto.user.response.CreateUserResponse;
-import com.nvc.spring_boot.entity.response.ResUpdateUserDTO;
-import com.nvc.spring_boot.entity.response.ResUserDTO;
+import com.nvc.spring_boot.dto.user.response.UpdateUserResponse;
+import com.nvc.spring_boot.dto.user.response.FindUserResponse;
 import com.nvc.spring_boot.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -29,7 +31,7 @@ public class UserController {
 
     @GetMapping("/list")
     @ApiMessage("get user list")
-    public ResponseEntity<PaginationDTO> getList(
+    public ResponseEntity<PaginationResponse> getList(
             @Filter Specification<User> specification,
             Pageable pageable
     ) {
@@ -38,19 +40,19 @@ public class UserController {
 
     @GetMapping("/{id}")
     @ApiMessage("get user info")
-    public ResponseEntity<ResUserDTO> findUser(@PathVariable("id") Long id) {
+    public ResponseEntity<FindUserResponse> findUser(@PathVariable("id") Long id) {
         return ResponseEntity.ok(userService.findUser(id));
     }
 
     @PutMapping()
     @ApiMessage("update user info")
-    public ResponseEntity<ResUpdateUserDTO> updateUser(@RequestBody User user) {
+    public ResponseEntity<UpdateUserResponse> updateUser(@Valid @RequestBody UpdateUserRequest user) {
         return ResponseEntity.ok(userService.updateUser(user));
     }
     
     @PostMapping()
     @ApiMessage("create new user")
-    public ResponseEntity<CreateUserResponse> createUser(@RequestBody CreateUserRequest user)  {
+    public ResponseEntity<CreateUserResponse> createUser(@Valid@RequestBody CreateUserRequest user)  {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
     }
 
