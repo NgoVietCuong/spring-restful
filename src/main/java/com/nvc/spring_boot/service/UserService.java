@@ -1,21 +1,21 @@
 package com.nvc.spring_boot.service;
 
-import com.nvc.spring_boot.domain.Company;
-import com.nvc.spring_boot.domain.response.PaginationDTO;
-import com.nvc.spring_boot.domain.response.ResCreateUserDTO;
-import com.nvc.spring_boot.domain.response.ResUpdateUserDTO;
-import com.nvc.spring_boot.domain.response.ResUserDTO;
+import com.nvc.spring_boot.dto.user.request.CreateUserRequest;
+import com.nvc.spring_boot.entity.Company;
+import com.nvc.spring_boot.dto.PaginationDTO;
+import com.nvc.spring_boot.dto.user.response.CreateUserResponse;
+import com.nvc.spring_boot.entity.response.ResUpdateUserDTO;
+import com.nvc.spring_boot.entity.response.ResUserDTO;
 import com.nvc.spring_boot.repository.CompanyRepository;
 import com.nvc.spring_boot.util.error.BadRequestException;
 import com.nvc.spring_boot.util.error.ResourceNotFoundException;
-import com.nvc.spring_boot.domain.User;
+import com.nvc.spring_boot.entity.User;
 import com.nvc.spring_boot.repository.UserRepository;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -112,7 +112,7 @@ public class UserService {
         }
     }
 
-    public ResCreateUserDTO createUser(User userData) throws BadRequestException {
+    public CreateUserResponse createUser(CreateUserRequest userData) throws BadRequestException {
         Boolean isUserExists = userRepository.existsByEmail(userData.getEmail());
         if (isUserExists) {
             throw new BadRequestException("Email already exists");
@@ -124,12 +124,20 @@ public class UserService {
         }
 
         userData.setPassword(passwordEncoder.encode(userData.getPassword()));
-        User newUser = userRepository.save(userData);
+        User newUser = User.builder()
+                .name(userData.getName())
+                .email(userData.getEmail())
+                .password(userData.getPassword())
+                .gender(userData.getGender())
+                .address(userData.getAddress())
+                .company(userData.getCompany())
+                .build();
+        userRepository.save(newUser);
 
-        ResCreateUserDTO resCreateUser = new ResCreateUserDTO();
+        CreateUserResponse resCreateUser = new CreateUserResponse();
         BeanUtils.copyProperties(newUser, resCreateUser);
 
-        ResCreateUserDTO.UserCompany userCompany = new ResCreateUserDTO.UserCompany();
+        CreateUserResponse.UserCompany userCompany = new CreateUserResponse.UserCompany();
         resCreateUser.setCompany(newUser.getCompany() != null ? userCompany : null);
 
         if (newUser.getCompany() != null) {

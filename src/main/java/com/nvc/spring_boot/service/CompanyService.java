@@ -1,7 +1,7 @@
 package com.nvc.spring_boot.service;
 
-import com.nvc.spring_boot.domain.Company;
-import com.nvc.spring_boot.domain.response.PaginationDTO;
+import com.nvc.spring_boot.entity.Company;
+import com.nvc.spring_boot.dto.PaginationDTO;
 import com.nvc.spring_boot.repository.CompanyRepository;
 import com.nvc.spring_boot.repository.JobRepository;
 import com.nvc.spring_boot.repository.UserRepository;

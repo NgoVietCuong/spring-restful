@@ -1,4 +1,4 @@
-package com.nvc.spring_boot.domain.response;
+package com.nvc.spring_boot.dto.user.response;
 
 import com.nvc.spring_boot.util.constant.Gender;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.Instant;
 
 @Data
-public class ResCreateUserDTO {
+public class CreateUserResponse {
     private Long id;
     private String name;
     private String email;

@@ -7,8 +7,8 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.nvc.spring_boot.domain.request.ReqLoginDTO;
-import com.nvc.spring_boot.domain.response.ResLoginDTO;
+import com.nvc.spring_boot.dto.auth.request.LoginRequest;
+import com.nvc.spring_boot.dto.auth.response.LoginResponse;
 import com.nvc.spring_boot.service.AuthService;
 
 import jakarta.validation.Valid;
@@ -29,9 +29,9 @@ public class AuthController {
 
     @PostMapping("/login")
     @ApiMessage("Login with email and password")
-    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody ReqLoginDTO reqLoginDto) {
-        Map<String, Object> result = authService.login(reqLoginDto);
-        ResLoginDTO resLogin = (ResLoginDTO) result.get("resLogin");
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+        Map<String, Object> result = authService.login(loginRequest);
+        LoginResponse resLogin = (LoginResponse) result.get("resLogin");
         String refreshToken = (String) result.get("refreshToken");
 
         //set cookies
@@ -45,15 +45,15 @@ public class AuthController {
 
     @GetMapping("/account")
     @ApiMessage("Get current user account")
-    public ResponseEntity<ResLoginDTO.UserLogin> account() {
+    public ResponseEntity<LoginResponse.UserLogin> account() {
         return ResponseEntity.ok(authService.getAccount());
     }
 
     @PostMapping("/refresh")
     @ApiMessage("Refresh token")
-    public ResponseEntity<ResLoginDTO> refreshToken(@CookieValue(name="refresh_token") String token) {
+    public ResponseEntity<LoginResponse> refreshToken(@CookieValue(name="refresh_token") String token) {
         Map<String, Object> result = authService.refreshToken(token);
-        ResLoginDTO resLogin = (ResLoginDTO) result.get("resLogin");
+        LoginResponse resLogin = (LoginResponse) result.get("resLogin");
         String refreshToken = (String) result.get("refreshToken");
 
         //set cookies

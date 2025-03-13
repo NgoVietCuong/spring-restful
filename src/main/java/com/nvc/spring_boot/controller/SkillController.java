@@ -1,8 +1,7 @@
 package com.nvc.spring_boot.controller;
 
-import com.nvc.spring_boot.domain.Company;
-import com.nvc.spring_boot.domain.Skill;
-import com.nvc.spring_boot.domain.response.PaginationDTO;
+import com.nvc.spring_boot.entity.Skill;
+import com.nvc.spring_boot.dto.PaginationDTO;
 import com.nvc.spring_boot.service.SkillService;
 import com.nvc.spring_boot.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
@@ -13,8 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/skills")

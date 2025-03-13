@@ -1,7 +1,6 @@
 package com.nvc.spring_boot.repository;
 
-import com.nvc.spring_boot.domain.Skill;
-import com.nvc.spring_boot.domain.User;
+import com.nvc.spring_boot.entity.Skill;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;

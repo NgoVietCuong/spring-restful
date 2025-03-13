@@ -9,7 +9,7 @@ import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import com.nvc.spring_boot.domain.response.RestResponse;
+import com.nvc.spring_boot.dto.RestResponse;
 
 import jakarta.servlet.http.HttpServletResponse;
 

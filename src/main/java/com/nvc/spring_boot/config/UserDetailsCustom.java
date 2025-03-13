@@ -20,7 +20,7 @@ public class UserDetailsCustom implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        com.nvc.spring_boot.domain.User user = this.userService.findUserByEmail(username);
+        com.nvc.spring_boot.entity.User user = this.userService.findUserByEmail(username);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }

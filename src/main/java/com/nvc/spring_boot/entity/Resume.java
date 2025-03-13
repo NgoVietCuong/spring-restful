@@ -1,6 +1,5 @@
-package com.nvc.spring_boot.domain;
+package com.nvc.spring_boot.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nvc.spring_boot.util.constant.ResumeStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

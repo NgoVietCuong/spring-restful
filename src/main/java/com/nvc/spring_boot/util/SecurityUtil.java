@@ -5,7 +5,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import com.nimbusds.jose.util.Base64;
-import com.nvc.spring_boot.domain.response.ResLoginDTO;
+import com.nvc.spring_boot.dto.auth.response.LoginResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -46,7 +46,7 @@ public class SecurityUtil {
         }
     }
 
-    public String createAccessToken(String email, ResLoginDTO resLogin) {
+    public String createAccessToken(String email, LoginResponse resLogin) {
         Instant now = Instant.now();
         Instant validity = now.plus(accessTokenExpiration, ChronoUnit.SECONDS);
 
@@ -61,7 +61,7 @@ public class SecurityUtil {
         return this.jwtEncoder.encode(JwtEncoderParameters.from(jwsHeader, claims)).getTokenValue();
     }
 
-    public String createRefreshToken(String email, ResLoginDTO resLogin) {
+    public String createRefreshToken(String email, LoginResponse resLogin) {
         Instant now = Instant.now();
         Instant validity = now.plus(refreshTokenExpiration, ChronoUnit.SECONDS);
 
