@@ -1,19 +1,19 @@
-package com.nvc.spring_boot.domain;
+package com.nvc.spring_boot.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.nvc.spring_boot.util.constant.Gender;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.List;
 
 @Entity
-@Table(name="users")
-@Getter
-@Setter
+@Data
+@Builder
+@Table(name = "users")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

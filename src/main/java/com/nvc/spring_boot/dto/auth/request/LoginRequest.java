@@ -1,10 +1,10 @@
-package com.nvc.spring_boot.domain.request;
+package com.nvc.spring_boot.dto.auth.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class ReqLoginDTO {
+public class LoginRequest {
     @NotBlank(message = "Email must not be empty")
     private String email;
 

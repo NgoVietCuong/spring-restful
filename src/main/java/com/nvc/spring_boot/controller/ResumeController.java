@@ -1,8 +1,7 @@
 package com.nvc.spring_boot.controller;
 
-import com.nvc.spring_boot.domain.Resume;
-import com.nvc.spring_boot.domain.Skill;
-import com.nvc.spring_boot.domain.response.PaginationDTO;
+import com.nvc.spring_boot.entity.Resume;
+import com.nvc.spring_boot.dto.PaginationDTO;
 import com.nvc.spring_boot.service.ResumeService;
 import com.nvc.spring_boot.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;

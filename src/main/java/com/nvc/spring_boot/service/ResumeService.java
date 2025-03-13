@@ -1,8 +1,7 @@
 package com.nvc.spring_boot.service;
 
-import com.nvc.spring_boot.domain.Resume;
-import com.nvc.spring_boot.domain.Skill;
-import com.nvc.spring_boot.domain.response.PaginationDTO;
+import com.nvc.spring_boot.entity.Resume;
+import com.nvc.spring_boot.dto.PaginationDTO;
 import com.nvc.spring_boot.repository.ResumeRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

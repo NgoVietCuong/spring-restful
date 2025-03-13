@@ -1,9 +1,10 @@
 package com.nvc.spring_boot.controller;
 
-import com.nvc.spring_boot.domain.response.PaginationDTO;
-import com.nvc.spring_boot.domain.response.ResCreateUserDTO;
-import com.nvc.spring_boot.domain.response.ResUpdateUserDTO;
-import com.nvc.spring_boot.domain.response.ResUserDTO;
+import com.nvc.spring_boot.dto.PaginationDTO;
+import com.nvc.spring_boot.dto.user.request.CreateUserRequest;
+import com.nvc.spring_boot.dto.user.response.CreateUserResponse;
+import com.nvc.spring_boot.entity.response.ResUpdateUserDTO;
+import com.nvc.spring_boot.entity.response.ResUserDTO;
 import com.nvc.spring_boot.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.transaction.Transactional;
@@ -13,7 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.nvc.spring_boot.domain.User;
+import com.nvc.spring_boot.entity.User;
 import com.nvc.spring_boot.service.UserService;
 
 
@@ -49,7 +50,7 @@ public class UserController {
     
     @PostMapping()
     @ApiMessage("create new user")
-    public ResponseEntity<ResCreateUserDTO> createUser(@RequestBody User user)  {
+    public ResponseEntity<CreateUserResponse> createUser(@RequestBody CreateUserRequest user)  {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
     }
 

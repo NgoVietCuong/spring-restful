@@ -1,6 +1,6 @@
 package com.nvc.spring_boot.controller;
 
-import com.nvc.spring_boot.domain.response.PaginationDTO;
+import com.nvc.spring_boot.dto.PaginationDTO;
 import com.nvc.spring_boot.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.transaction.Transactional;
@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.nvc.spring_boot.domain.Company;
+import com.nvc.spring_boot.entity.Company;
 import com.nvc.spring_boot.service.CompanyService;
 
 

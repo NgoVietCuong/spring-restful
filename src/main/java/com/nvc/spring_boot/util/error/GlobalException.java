@@ -13,7 +13,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.nvc.spring_boot.domain.response.RestResponse;
+import com.nvc.spring_boot.dto.RestResponse;
 
 @RestControllerAdvice
 public class GlobalException {

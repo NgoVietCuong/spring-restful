@@ -1,4 +1,4 @@
-package com.nvc.spring_boot.domain;
+package com.nvc.spring_boot.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
