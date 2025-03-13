@@ -1,7 +1,7 @@
 package com.nvc.spring_boot.controller;
 
 import com.nvc.spring_boot.entity.Job;
-import com.nvc.spring_boot.dto.PaginationDTO;
+import com.nvc.spring_boot.dto.PaginationResponse;
 import com.nvc.spring_boot.service.JobService;
 import com.nvc.spring_boot.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
@@ -24,7 +24,7 @@ public class JobController {
 
     @GetMapping("/list")
     @ApiMessage("get job list")
-    public ResponseEntity<PaginationDTO> getList(
+    public ResponseEntity<PaginationResponse> getList(
             @Filter Specification<Job> specification,
             Pageable pageable) {
         return ResponseEntity.ok(jobService.getList(specification, pageable));

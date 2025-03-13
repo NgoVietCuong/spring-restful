@@ -1,6 +1,6 @@
 package com.nvc.spring_boot.controller;
 
-import com.nvc.spring_boot.dto.PaginationDTO;
+import com.nvc.spring_boot.dto.PaginationResponse;
 import com.nvc.spring_boot.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.transaction.Transactional;
@@ -26,7 +26,7 @@ public class CompanyController {
 
     @GetMapping("/list")
     @ApiMessage("get company list")
-    public ResponseEntity<PaginationDTO> getList(
+    public ResponseEntity<PaginationResponse> getList(
            @Filter Specification<Company> specification,
            Pageable pageable
     ) {

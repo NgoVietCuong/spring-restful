@@ -17,18 +17,19 @@ public class ResumeService {
     }
 
     public PaginationResponse getList(Specification<Resume> specification, Pageable pageable) {
-        Page<Resume> pageResume = resumeRepository.findAll(specification, pageable);
-        PaginationResponse.PaginationMeta meta = PaginationResponse.PaginationMeta.builder()
-                .currentPage(pageable.getPageNumber() + 1)
-                .itemsPerPage(pageable.getPageSize())
-                .totalPages(pageResume.getTotalPages())
-                .totalItems(pageResume.getTotalElements())
-                .build();
+        Page<Resume> pageCompany = resumeRepository.findAll(specification, pageable);
+        PaginationResponse result = new PaginationResponse();
+        PaginationResponse.MetaDTO meta = new PaginationResponse.MetaDTO();
 
-        return PaginationResponse.builder()
-                .meta(meta)
-                .content(pageResume.getContent())
-                .build();
+        meta.setCurrentPage(pageable.getPageNumber() + 1);
+        meta.setItemsPerPage(pageable.getPageSize());
+        meta.setTotalPages(pageCompany.getTotalPages());
+        meta.setTotalItems(pageCompany.getTotalElements());
+
+        result.setMeta(meta);
+        result.setContent(pageCompany.getContent());
+
+        return result;
     }
 
     public Resume findOne(Long id) {

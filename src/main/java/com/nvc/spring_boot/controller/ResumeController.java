@@ -1,7 +1,7 @@
 package com.nvc.spring_boot.controller;
 
 import com.nvc.spring_boot.entity.Resume;
-import com.nvc.spring_boot.dto.PaginationDTO;
+import com.nvc.spring_boot.dto.PaginationResponse;
 import com.nvc.spring_boot.service.ResumeService;
 import com.nvc.spring_boot.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
@@ -24,7 +24,7 @@ public class ResumeController {
 
     @GetMapping("/list")
     @ApiMessage("get resume list")
-    public ResponseEntity<PaginationDTO> getList(
+    public ResponseEntity<PaginationResponse> getList(
             @Filter Specification<Resume> specification,
             Pageable pageable) {
         return ResponseEntity.ok(resumeService.getList(specification, pageable));

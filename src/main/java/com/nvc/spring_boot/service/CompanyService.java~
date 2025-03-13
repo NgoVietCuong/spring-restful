@@ -25,17 +25,18 @@ public class CompanyService {
 
     public PaginationResponse getList(Specification<Company> specification, Pageable pageable) {
         Page<Company> pageCompany = companyRepository.findAll(specification, pageable);
-        PaginationResponse.PaginationMeta meta = PaginationResponse.PaginationMeta.builder()
-                .currentPage(pageable.getPageNumber() + 1)
-                .itemsPerPage(pageable.getPageSize())
-                .totalPages(pageCompany.getTotalPages())
-                .totalItems(pageCompany.getTotalElements())
-                .build();
+        PaginationResponse result = new PaginationResponse();
+        PaginationResponse.MetaDTO meta = new PaginationResponse.MetaDTO();
 
-        return PaginationResponse.builder()
-                .meta(meta)
-                .content(pageCompany.getContent())
-                .build();
+        meta.setCurrentPage(pageable.getPageNumber() + 1);
+        meta.setItemsPerPage(pageable.getPageSize());
+        meta.setTotalPages(pageCompany.getTotalPages());
+        meta.setTotalItems(pageCompany.getTotalElements());
+
+        result.setMeta(meta);
+        result.setContent(pageCompany.getContent());
+
+        return result;
     }
 
     public Company findCompany(Long id) {

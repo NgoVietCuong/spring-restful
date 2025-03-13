@@ -30,18 +30,19 @@ public class JobService {
     }
 
     public PaginationResponse getList(Specification<Job> specification, Pageable pageable) {
-        Page<Job> pageJob = jobRepository.findAll(specification, pageable);
-        PaginationResponse.PaginationMeta meta = PaginationResponse.PaginationMeta.builder()
-                .currentPage(pageable.getPageNumber() + 1)
-                .itemsPerPage(pageable.getPageSize())
-                .totalPages(pageJob.getTotalPages())
-                .totalItems(pageJob.getTotalElements())
-                .build();
+        Page<Job> pageCompany = jobRepository.findAll(specification, pageable);
+        PaginationResponse result = new PaginationResponse();
+        PaginationResponse.MetaDTO meta = new PaginationResponse.MetaDTO();
 
-        return PaginationResponse.builder()
-                .meta(meta)
-                .content(pageJob.getContent())
-                .build();
+        meta.setCurrentPage(pageable.getPageNumber() + 1);
+        meta.setItemsPerPage(pageable.getPageSize());
+        meta.setTotalPages(pageCompany.getTotalPages());
+        meta.setTotalItems(pageCompany.getTotalElements());
+
+        result.setMeta(meta);
+        result.setContent(pageCompany.getContent());
+
+        return result;
     }
 
     public Job findJob(Long id) {

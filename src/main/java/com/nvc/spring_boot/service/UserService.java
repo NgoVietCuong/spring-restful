@@ -1,11 +1,12 @@
 package com.nvc.spring_boot.service;
 
 import com.nvc.spring_boot.dto.user.request.CreateUserRequest;
+import com.nvc.spring_boot.dto.user.request.UpdateUserRequest;
 import com.nvc.spring_boot.entity.Company;
-import com.nvc.spring_boot.dto.PaginationDTO;
+import com.nvc.spring_boot.dto.PaginationResponse;
 import com.nvc.spring_boot.dto.user.response.CreateUserResponse;
-import com.nvc.spring_boot.entity.response.ResUpdateUserDTO;
-import com.nvc.spring_boot.entity.response.ResUserDTO;
+import com.nvc.spring_boot.dto.user.response.UpdateUserResponse;
+import com.nvc.spring_boot.dto.user.response.FindUserResponse;
 import com.nvc.spring_boot.repository.CompanyRepository;
 import com.nvc.spring_boot.util.error.BadRequestException;
 import com.nvc.spring_boot.util.error.ResourceNotFoundException;
@@ -34,21 +35,20 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public PaginationDTO getList(Specification<User> specification, Pageable pageable) {
+    public PaginationResponse getList(Specification<User> specification, Pageable pageable) {
         Page<User> pageUser = userRepository.findAll(specification, pageable);
-        PaginationDTO result = new PaginationDTO();
-        PaginationDTO.MetaDTO meta = new PaginationDTO.MetaDTO();
+        PaginationResponse.PaginationMeta meta = PaginationResponse.PaginationMeta.builder()
+                .currentPage(pageable.getPageNumber() + 1)
+                .itemsPerPage(pageable.getPageSize())
+                .totalPages(pageUser.getTotalPages())
+                .totalItems(pageUser.getTotalElements())
+                .build();
 
-        meta.setCurrentPage(pageable.getPageNumber() + 1);
-        meta.setItemsPerPage(pageable.getPageSize());
-        meta.setTotalPages(pageUser.getTotalPages());
-        meta.setTotalItems(pageUser.getTotalElements());
-
-        List<ResUserDTO> resUsers = pageUser.getContent().stream().map(item -> {
-            ResUserDTO resUser = new ResUserDTO();
+        List<FindUserResponse> resUsers = pageUser.getContent().stream().map(item -> {
+            FindUserResponse resUser = new FindUserResponse();
             BeanUtils.copyProperties(item, resUser);
 
-            ResUserDTO.UserCompany userCompany = new ResUserDTO.UserCompany();
+            FindUserResponse.UserCompany userCompany = new FindUserResponse.UserCompany();
             resUser.setCompany(item.getCompany() != null ? userCompany : null);
 
             if (item.getCompany() != null) {
@@ -57,20 +57,21 @@ public class UserService {
 
             return resUser;
         }).collect(Collectors.toList());
-        result.setMeta(meta);
-        result.setContent(resUsers);
 
-        return result;
+        return PaginationResponse.builder()
+                .meta(meta)
+                .content(resUsers)
+                .build();
     }
 
-    public ResUserDTO findUser(Long id) {
+    public FindUserResponse findUser(Long id) {
         User user = userRepository.findById(id).orElse(null);
 
         if (user != null) {
-            ResUserDTO resUser = new ResUserDTO();
+            FindUserResponse resUser = new FindUserResponse();
             BeanUtils.copyProperties(user, resUser);
 
-            ResUserDTO.UserCompany userCompany = new ResUserDTO.UserCompany();
+            FindUserResponse.UserCompany userCompany = new FindUserResponse.UserCompany();
             resUser.setCompany(user.getCompany() != null ? userCompany : null);
 
             if (user.getCompany() != null) {
@@ -83,7 +84,7 @@ public class UserService {
         return null;
     }
 
-    public ResUpdateUserDTO updateUser(User userData) throws ResourceNotFoundException {
+    public UpdateUserResponse updateUser(UpdateUserRequest userData) throws ResourceNotFoundException {
         User user = userRepository.findById(userData.getId()).orElse(null);
         if (user != null) {
             user.setName(userData.getName());
@@ -96,10 +97,10 @@ public class UserService {
             }
             User updatedUser = userRepository.save(user);
 
-            ResUpdateUserDTO resUpdateUser = new ResUpdateUserDTO();
+            UpdateUserResponse resUpdateUser = new UpdateUserResponse();
             BeanUtils.copyProperties(updatedUser, resUpdateUser);
 
-            ResUpdateUserDTO.UserCompany userCompany = new ResUpdateUserDTO.UserCompany();
+            UpdateUserResponse.UserCompany userCompany = new UpdateUserResponse.UserCompany();
             resUpdateUser.setCompany(updatedUser.getCompany() != null ? userCompany : null);
 
             if (updatedUser.getCompany() != null) {
