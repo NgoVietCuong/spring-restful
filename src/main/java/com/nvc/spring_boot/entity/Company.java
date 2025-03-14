@@ -5,22 +5,22 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nvc.spring_boot.util.SecurityUtil;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.List;
 
 @Entity
 @Table(name = "companies")
-@Getter
-@Setter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Company name must not be empty")
     private String name;
 
     @Column(columnDefinition = "MEDIUMTEXT")

@@ -1,10 +1,13 @@
 package com.nvc.spring_boot.service;
 
+import com.nvc.spring_boot.dto.skill.request.CreateSkillRequest;
+import com.nvc.spring_boot.dto.skill.response.CreateSkillResponse;
 import com.nvc.spring_boot.entity.Skill;
 import com.nvc.spring_boot.dto.PaginationResponse;
 import com.nvc.spring_boot.repository.SkillRepository;
 import com.nvc.spring_boot.util.error.BadRequestException;
 import com.nvc.spring_boot.util.error.ResourceNotFoundException;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -52,14 +55,21 @@ public class SkillService {
         }
     }
 
-    public Skill createSkill(Skill skill) {
-        Boolean isSkillExists = skillRepository.existsByName(skill.getName());
+    public CreateSkillResponse createSkill(CreateSkillRequest skillData) {
+        Boolean isSkillExists = skillRepository.existsByName(skillData.getName());
         if (isSkillExists) {
             throw new BadRequestException("Skill name already exists");
         }
 
-        return skillRepository.save(skill);
+        Skill newSkill = Skill.builder().name(skillData.getName()).build();
+        skillRepository.save(newSkill);
+
+        CreateSkillResponse resCreateSkill = new CreateSkillResponse();
+        BeanUtils.copyProperties(newSkill, resCreateSkill);
+
+        return resCreateSkill;
     }
+
 
     public void deleteSkill(Long id) {
         Skill skill = findSkill(id);

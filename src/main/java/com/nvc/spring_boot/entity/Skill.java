@@ -2,8 +2,10 @@ package com.nvc.spring_boot.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.List;
@@ -11,12 +13,14 @@ import java.util.List;
 @Entity
 @Table(name="skills")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Skill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Skill name must not be empty")
     private String name;
 
     private Instant createdAt;
@@ -32,7 +36,6 @@ public class Skill {
     public void handleBeforePersist() {
         this.createdAt = Instant.now();
     }
-
 
     @PreUpdate()
     public void handleBeforeUpdate() {
