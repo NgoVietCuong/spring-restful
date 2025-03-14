@@ -1,6 +1,11 @@
 package com.nvc.spring_boot.controller;
 
 import com.nvc.spring_boot.dto.PaginationResponse;
+import com.nvc.spring_boot.dto.company.request.CreateCompanyRequest;
+import com.nvc.spring_boot.dto.company.request.UpdateCompanyRequest;
+import com.nvc.spring_boot.dto.company.response.CreateCompanyResponse;
+import com.nvc.spring_boot.dto.company.response.FindCompanyResponse;
+import com.nvc.spring_boot.dto.company.response.UpdateCompanyResponse;
 import com.nvc.spring_boot.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.transaction.Transactional;
@@ -35,19 +40,19 @@ public class CompanyController {
 
     @GetMapping("/{id}")
     @ApiMessage("get company info")
-    public ResponseEntity<Company> findCompany(@PathVariable("id") Long id) {
+    public ResponseEntity<FindCompanyResponse> findCompany(@PathVariable("id") Long id) {
         return ResponseEntity.ok(companyService.findCompany(id));
     }
 
     @PutMapping()
     @ApiMessage("update company info")
-    public ResponseEntity<Company> updateCompany(@Valid @RequestBody Company company) {
+    public ResponseEntity<UpdateCompanyResponse> updateCompany(@Valid @RequestBody UpdateCompanyRequest company) {
         return ResponseEntity.ok(companyService.updateCompany(company));
     }
 
     @PostMapping()
     @ApiMessage("create new company")
-    public ResponseEntity<Company> createCompany(@Valid @RequestBody Company company) {
+    public ResponseEntity<CreateCompanyResponse> createCompany(@Valid @RequestBody CreateCompanyRequest company) {
         return ResponseEntity.status(HttpStatus.CREATED).body(companyService.createCompany(company));
     }
 

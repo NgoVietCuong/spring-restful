@@ -1,5 +1,7 @@
 package com.nvc.spring_boot.controller;
 
+import com.nvc.spring_boot.dto.skill.request.CreateSkillRequest;
+import com.nvc.spring_boot.dto.skill.response.CreateSkillResponse;
 import com.nvc.spring_boot.entity.Skill;
 import com.nvc.spring_boot.dto.PaginationResponse;
 import com.nvc.spring_boot.service.SkillService;
@@ -38,7 +40,7 @@ public class SkillController {
 
     @PostMapping()
     @ApiMessage("create new skill")
-    public ResponseEntity<Skill> createSkill(@Valid @RequestBody Skill skill) {
+    public ResponseEntity<CreateSkillResponse> createSkill(@Valid @RequestBody CreateSkillRequest skill) {
         return ResponseEntity.status(HttpStatus.CREATED).body(skillService.createSkill(skill));
     }
 

@@ -5,7 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.nvc.spring_boot.util.constant.Level;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.Date;
@@ -14,6 +17,9 @@ import java.util.List;
 @Entity
 @Table(name="jobs")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Job {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
