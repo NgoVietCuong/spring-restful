@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.nvc.spring_boot.util.constant.Level;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,9 +23,7 @@ public class Job {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Job name must not be empty")
     private String name;
-
     private String location;
     private Double salary;
     private Integer quantity;
