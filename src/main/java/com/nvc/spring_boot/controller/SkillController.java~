@@ -3,7 +3,6 @@ package com.nvc.spring_boot.controller;
 import com.nvc.spring_boot.dto.skill.request.CreateSkillRequest;
 import com.nvc.spring_boot.dto.skill.request.UpdateSkillRequest;
 import com.nvc.spring_boot.dto.skill.response.CreateSkillResponse;
-import com.nvc.spring_boot.dto.skill.response.FindSkillResponse;
 import com.nvc.spring_boot.dto.skill.response.UpdateSkillResponse;
 import com.nvc.spring_boot.entity.Skill;
 import com.nvc.spring_boot.dto.PaginationResponse;

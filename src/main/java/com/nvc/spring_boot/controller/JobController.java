@@ -1,5 +1,9 @@
 package com.nvc.spring_boot.controller;
 
+import com.nvc.spring_boot.dto.job.request.CreateJobRequest;
+import com.nvc.spring_boot.dto.job.request.UpdateJobRequest;
+import com.nvc.spring_boot.dto.job.response.CreateJobResponse;
+import com.nvc.spring_boot.dto.job.response.UpdateJobResponse;
 import com.nvc.spring_boot.entity.Job;
 import com.nvc.spring_boot.dto.PaginationResponse;
 import com.nvc.spring_boot.service.JobService;
@@ -38,13 +42,13 @@ public class JobController {
 
     @PostMapping()
     @ApiMessage("create new job")
-    public ResponseEntity<Job> createJob(@Valid @RequestBody Job job) {
+    public ResponseEntity<CreateJobResponse> createJob(@Valid @RequestBody CreateJobRequest job) {
         return ResponseEntity.status(HttpStatus.CREATED).body(jobService.createJob(job));
     }
 
     @PutMapping()
     @ApiMessage("update job info")
-    public ResponseEntity<Job> updateJob(@Valid @RequestBody Job job) {
+    public ResponseEntity<UpdateJobResponse> updateJob(@Valid @RequestBody UpdateJobRequest job) {
         return ResponseEntity.ok(jobService.updateJob(job));
     }
 

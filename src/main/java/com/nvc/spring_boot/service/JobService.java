@@ -1,5 +1,9 @@
 package com.nvc.spring_boot.service;
 
+import com.nvc.spring_boot.dto.job.request.CreateJobRequest;
+import com.nvc.spring_boot.dto.job.request.UpdateJobRequest;
+import com.nvc.spring_boot.dto.job.response.CreateJobResponse;
+import com.nvc.spring_boot.dto.job.response.UpdateJobResponse;
 import com.nvc.spring_boot.entity.Company;
 import com.nvc.spring_boot.entity.Job;
 import com.nvc.spring_boot.entity.Skill;
@@ -14,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,33 +53,83 @@ public class JobService {
         return jobRepository.findById(id).orElse(null);
     }
 
-    public Job updateJob(Job jobData) throws ResourceNotFoundException {
+    public UpdateJobResponse updateJob(UpdateJobRequest jobData) throws ResourceNotFoundException {
         Job job = findJob(jobData.getId());
         if (job == null) throw new ResourceNotFoundException("Job not found");
 
         BeanUtils.copyProperties(jobData, job);
-        if (job.getCompany() != null) {
-            Company company = companyRepository.findById(job.getCompany().getId()).orElse(null);
+        if (jobData.getCompany() != null) {
+            Company company = companyRepository.findById(jobData.getCompany().getId()).orElse(null);
             job.setCompany(company);
         }
 
-        if (job.getSkills() != null) {
+        if (jobData.getSkills() != null) {
             List<Skill> skills =
-                    skillRepository.findSkillByIdIn(job.getSkills().stream().map(Skill::getId).collect(Collectors.toList()));
+                    skillRepository.findSkillByIdIn(jobData.getSkills().stream().map(Skill::getId).collect(Collectors.toList()));
             job.setSkills(skills);
         }
 
-        return jobRepository.save(job);
+        jobRepository.save(job);
+
+        UpdateJobResponse.JobCompany jobCompany = job.getCompany() != null ? UpdateJobResponse.JobCompany.builder()
+                .id(job.getCompany().getId())
+                .name(job.getCompany().getName())
+                .build() : null;
+
+        List<UpdateJobResponse.JobSkill> jobSkills = job.getSkills().stream().map(skill -> {
+            return UpdateJobResponse.JobSkill.builder()
+                    .id(skill.getId())
+                    .name(skill.getName())
+                    .build();
+        }).toList();
+
+        UpdateJobResponse resUpdateJob = new UpdateJobResponse();
+        BeanUtils.copyProperties(job, resUpdateJob);
+        resUpdateJob.setCompany(jobCompany);
+        resUpdateJob.setSkills(jobSkills);
+        return resUpdateJob;
     }
 
-    public Job createJob(Job job) {
-        Company company = companyRepository.findById(job.getCompany().getId()).orElse(null);
-        job.setCompany(company);
+    public CreateJobResponse createJob(CreateJobRequest jobData) {
+        Company company = jobData.getCompany() != null ? companyRepository.findById(jobData.getCompany().getId()).orElse(null) : null;
 
-        List<Skill> skills =
-                skillRepository.findSkillByIdIn(job.getSkills().stream().map(Skill::getId).collect(Collectors.toList()));
-        job.setSkills(skills);
-        return jobRepository.save(job);
+        List<Skill> skills = jobData.getSkills() != null ?
+                skillRepository.findSkillByIdIn(jobData.getSkills().stream().map(Skill::getId).collect(Collectors.toList())) : Collections.emptyList();
+
+        Job newJob = Job.builder()
+                .name(jobData.getName())
+                .location(jobData.getLocation())
+                .salary(jobData.getSalary())
+                .quantity(jobData.getQuantity())
+                .description(jobData.getDescription())
+                .startDate(jobData.getStartDate())
+                .endDate(jobData.getEndDate())
+                .isActive(jobData.getIsActive())
+                .company(company)
+                .skills(skills)
+                .build();
+
+        jobRepository.save(newJob);
+
+        CreateJobResponse.JobCompany jobCompany = newJob.getCompany() != null ? CreateJobResponse.JobCompany.builder()
+                                                                                    .id(newJob.getCompany().getId())
+                                                                                    .name(newJob.getCompany().getName())
+                                                                                    .build() : null;
+
+        List<CreateJobResponse.JobSkill> jobSkills = newJob.getSkills().stream().map(skill -> {
+             return CreateJobResponse.JobSkill.builder()
+                    .id(skill.getId())
+                    .name(skill.getName())
+                    .build();
+        }).toList();
+
+        CreateJobResponse resCreateJob = new CreateJobResponse();
+        BeanUtils.copyProperties(newJob, resCreateJob);
+        resCreateJob.setCompany(jobCompany);
+        resCreateJob.setSkills(jobSkills);
+
+        return resCreateJob;
+
     }
 
     public void deleteJob(Long id) {

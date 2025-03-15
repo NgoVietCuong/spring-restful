@@ -1,7 +1,10 @@
 package com.nvc.spring_boot.service;
 
 import com.nvc.spring_boot.dto.skill.request.CreateSkillRequest;
+import com.nvc.spring_boot.dto.skill.request.UpdateSkillRequest;
 import com.nvc.spring_boot.dto.skill.response.CreateSkillResponse;
+import com.nvc.spring_boot.dto.skill.response.FindSkillResponse;
+import com.nvc.spring_boot.dto.skill.response.UpdateSkillResponse;
 import com.nvc.spring_boot.entity.Skill;
 import com.nvc.spring_boot.dto.PaginationResponse;
 import com.nvc.spring_boot.repository.SkillRepository;
@@ -12,6 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class SkillService {
@@ -30,18 +35,34 @@ public class SkillService {
                 .totalItems(pageSkill.getTotalElements())
                 .build();
 
+        List<FindSkillResponse> resSkills = pageSkill.getContent().stream().map(item -> {
+            FindSkillResponse resSkill = new FindSkillResponse();
+            BeanUtils.copyProperties(item, resSkill);
+
+            return resSkill;
+        }).toList();
+
         return PaginationResponse.builder()
                 .meta(meta)
-                .content(pageSkill.getContent())
+                .content(resSkills)
                 .build();
     }
 
-    public Skill findSkill(Long id) {
-        return skillRepository.findById(id).orElse(null);
+    public FindSkillResponse findSkill(Long id) {
+        Skill skill = skillRepository.findById(id).orElse(null);
+
+        if (skill != null) {
+            FindSkillResponse resFindSkill = new FindSkillResponse();
+            BeanUtils.copyProperties(skill, resFindSkill);
+
+            return resFindSkill;
+        }
+
+        return null;
     }
 
-    public Skill updateSkill(Skill skillData) throws ResourceNotFoundException, BadRequestException {
-        Skill skill = findSkill(skillData.getId());
+    public UpdateSkillResponse updateSkill(UpdateSkillRequest skillData) throws ResourceNotFoundException, BadRequestException {
+        Skill skill = skillRepository.findById(skillData.getId()).orElse(null);
         if (skill != null) {
             Boolean isDuplicatedSkillName = skillRepository.existsByNameAndIdNot(skillData.getName(), skill.getId());
             if (isDuplicatedSkillName) {
@@ -49,7 +70,12 @@ public class SkillService {
             }
 
             skill.setName(skillData.getName());
-            return skillRepository.save(skill);
+            skillRepository.save(skill);
+
+            UpdateSkillResponse resUpdateSkill = new UpdateSkillResponse();
+            BeanUtils.copyProperties(skill, resUpdateSkill);
+
+            return resUpdateSkill;
         } else {
             throw new ResourceNotFoundException("Skill not found");
         }
@@ -70,9 +96,8 @@ public class SkillService {
         return resCreateSkill;
     }
 
-
     public void deleteSkill(Long id) {
-        Skill skill = findSkill(id);
+        Skill skill = skillRepository.findById(id).orElse(null);
         if (skill != null) {
             skill.getJobs().forEach(job -> job.getSkills().remove(skill));
         }
