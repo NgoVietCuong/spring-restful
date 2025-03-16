@@ -17,6 +17,16 @@ import com.nvc.spring_boot.dto.RestResponse;
 
 @RestControllerAdvice
 public class GlobalException {
+    //handle all exception
+    @ExceptionHandler(value = Exception.class)
+    public ResponseEntity<RestResponse<Object>> handleAllException(Exception ex) {
+        RestResponse<Object> res = new RestResponse<Object>();
+        res.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        res.setError(ex.getMessage());
+        res.setMessage("Internal Server Error");
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
+    }
+
     @ExceptionHandler(value = {
         UsernameNotFoundException.class,
         BadCredentialsException.class,
