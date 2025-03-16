@@ -1,6 +1,7 @@
 package com.nvc.spring_boot.dto.user.request;
 
 import com.nvc.spring_boot.entity.Company;
+import com.nvc.spring_boot.entity.Role;
 import com.nvc.spring_boot.util.constant.Gender;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -17,5 +18,10 @@ public class CreateUserRequest {
 
     private Gender gender;
     private String address;
+
+    @NotNull(message = "Role must not be empty")
     private Company company;
+
+    @NotNull(message = "Role must not be empty")
+    private Role role;
 }

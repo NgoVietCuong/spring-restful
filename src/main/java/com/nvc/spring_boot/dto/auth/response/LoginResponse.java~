@@ -21,7 +21,6 @@ public class LoginResponse {
     @Data
     @SuperBuilder
     @EqualsAndHashCode(callSuper = true)
-    @NoArgsConstructor
     public static class UserLogin extends UserInToken {
         private Role role;
     }
