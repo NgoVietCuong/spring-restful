@@ -1,9 +1,11 @@
 package com.nvc.spring_boot.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nvc.spring_boot.util.constant.Gender;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.List;
@@ -11,41 +13,33 @@ import java.util.List;
 @Entity
 @Data
 @Builder
-@Table(name = "users")
+@Table(name = "roles")
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Role {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-    private String email;
-    private String password;
-
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
-
-    private String address;
-
-    @Column(columnDefinition = "TEXT")
-    private String refreshToken;
+    private String description;
+    private Boolean isActive;
 
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
-
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Resume> resumes;
+    List<User> users;
+
+    @ManyToMany
+    @JoinTable(
+            name = "role_permission",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "permission_id")
+    )
+    List<Permission> permissions;
 
     @PrePersist()
     public void handleBeforePersist() {

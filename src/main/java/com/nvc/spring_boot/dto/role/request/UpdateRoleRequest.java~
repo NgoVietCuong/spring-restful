@@ -1,0 +1,9 @@
+package com.nvc.spring_boot.dto.role.request;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class UpdateRoleRequest extends CreateRoleRequest {
+}

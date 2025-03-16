@@ -39,15 +39,26 @@ public class AuthService {
         LoginResponse resLogin = new LoginResponse();
 
         User user = userService.findUserByEmail(loginRequest.getEmail());
-        LoginResponse.UserLogin userLogin = new LoginResponse.UserLogin(user.getId(), user.getName(), user.getEmail());
+        LoginResponse.UserInToken userInToken = LoginResponse.UserInToken.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .build();
+
+        LoginResponse.UserLogin userLogin = LoginResponse.UserLogin.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .build();
         resLogin.setUser(userLogin);
 
         //create access token
-        String accessToken = securityUtil.createAccessToken(authentication.getName(), resLogin);
+        String accessToken = securityUtil.createAccessToken(authentication.getName(), userInToken);
         resLogin.setAccessToken(accessToken);
 
         // create refresh token and update user
-        String refreshToken = securityUtil.createRefreshToken(loginRequest.getEmail(), resLogin);
+        String refreshToken = securityUtil.createRefreshToken(loginRequest.getEmail(), userInToken);
         userService.updateUserToken(user, refreshToken);
 
         Map<String, Object> result =  new HashMap<>();
@@ -80,15 +91,26 @@ public class AuthService {
 
         LoginResponse resLogin = new LoginResponse();
 
-        LoginResponse.UserLogin userLogin = new LoginResponse.UserLogin(user.getId(), user.getName(), user.getEmail());
+        LoginResponse.UserInToken userInToken = LoginResponse.UserInToken.builder()
+                                                .id(user.getId())
+                                                .name(user.getName())
+                                                .email(user.getEmail())
+                                                .build();
+
+        LoginResponse.UserLogin userLogin = LoginResponse.UserLogin.builder()
+                                            .id(user.getId())
+                                            .name(user.getName())
+                                            .email(user.getEmail())
+                                            .role(user.getRole())
+                                            .build();
         resLogin.setUser(userLogin);
 
         //create access token
-        String accessToken = securityUtil.createAccessToken(email, resLogin);
+        String accessToken = securityUtil.createAccessToken(email, userInToken);
         resLogin.setAccessToken(accessToken);
 
         // create refresh token and update user
-        String newRefreshToken = securityUtil.createRefreshToken(email, resLogin);
+        String newRefreshToken = securityUtil.createRefreshToken(email, userInToken);
         userService.updateUserToken(user, newRefreshToken);
 
         Map<String, Object> result =  new HashMap<>();

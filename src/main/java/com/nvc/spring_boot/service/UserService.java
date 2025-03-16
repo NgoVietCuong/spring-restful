@@ -2,18 +2,20 @@ package com.nvc.spring_boot.service;
 
 import com.nvc.spring_boot.dto.user.request.CreateUserRequest;
 import com.nvc.spring_boot.dto.user.request.UpdateUserRequest;
+import com.nvc.spring_boot.dto.user.response.BaseUserResponse;
 import com.nvc.spring_boot.entity.Company;
 import com.nvc.spring_boot.dto.PaginationResponse;
 import com.nvc.spring_boot.dto.user.response.CreateUserResponse;
 import com.nvc.spring_boot.dto.user.response.UpdateUserResponse;
 import com.nvc.spring_boot.dto.user.response.FindUserResponse;
+import com.nvc.spring_boot.entity.Role;
 import com.nvc.spring_boot.repository.CompanyRepository;
+import com.nvc.spring_boot.repository.RoleRepository;
 import com.nvc.spring_boot.util.error.BadRequestException;
 import com.nvc.spring_boot.util.error.ResourceNotFoundException;
 import com.nvc.spring_boot.entity.User;
 import com.nvc.spring_boot.repository.UserRepository;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -28,11 +30,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CompanyRepository companyRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, CompanyRepository companyRepository, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.companyRepository = companyRepository;
         this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
     }
 
     public PaginationResponse getList(Specification<User> specification, Pageable pageable) {
@@ -44,18 +48,21 @@ public class UserService {
                 .totalItems(pageUser.getTotalElements())
                 .build();
 
-        List<FindUserResponse> resUsers = pageUser.getContent().stream().map(item -> {
-            FindUserResponse resUser = new FindUserResponse();
-            BeanUtils.copyProperties(item, resUser);
+        List<FindUserResponse> resUsers = pageUser.getContent().stream().map(user -> {
+            FindUserResponse.UserCompany userCompany = convertToUserCompany(user.getCompany());
+            FindUserResponse.UserRole userRole = convertToUserRole(user.getRole());
 
-            FindUserResponse.UserCompany userCompany = new FindUserResponse.UserCompany();
-            resUser.setCompany(item.getCompany() != null ? userCompany : null);
-
-            if (item.getCompany() != null) {
-                BeanUtils.copyProperties(item.getCompany(), resUser.getCompany());
-            }
-
-            return resUser;
+            return FindUserResponse.builder()
+                    .id(user.getId())
+                    .name(user.getName())
+                    .email(user.getEmail())
+                    .gender(user.getGender())
+                    .address(user.getAddress())
+                    .createdAt(user.getCreatedAt())
+                    .updatedAt(user.getUpdatedAt())
+                    .company(userCompany)
+                    .role(userRole)
+                    .build();
         }).collect(Collectors.toList());
 
         return PaginationResponse.builder()
@@ -68,17 +75,20 @@ public class UserService {
         User user = userRepository.findById(id).orElse(null);
 
         if (user != null) {
-            FindUserResponse resUser = new FindUserResponse();
-            BeanUtils.copyProperties(user, resUser);
+            FindUserResponse.UserCompany userCompany = convertToUserCompany(user.getCompany());
+            FindUserResponse.UserRole userRole = convertToUserRole(user.getRole());
 
-            FindUserResponse.UserCompany userCompany = new FindUserResponse.UserCompany();
-            resUser.setCompany(user.getCompany() != null ? userCompany : null);
-
-            if (user.getCompany() != null) {
-                BeanUtils.copyProperties(user.getCompany(), resUser.getCompany());
-            }
-
-            return resUser;
+            return FindUserResponse.builder()
+                    .id(user.getId())
+                    .name(user.getName())
+                    .email(user.getEmail())
+                    .gender(user.getGender())
+                    .address(user.getAddress())
+                    .createdAt(user.getCreatedAt())
+                    .updatedAt(user.getUpdatedAt())
+                    .company(userCompany)
+                    .role(userRole)
+                    .build();
         }
 
         return null;
@@ -91,23 +101,27 @@ public class UserService {
             user.setGender(userData.getGender());
             user.setAddress(userData.getAddress());
 
-            if (userData.getCompany() != null) {
-                Company company = companyRepository.findById(userData.getCompany().getId()).orElse(null);
-                user.setCompany(company);
-            }
-            User updatedUser = userRepository.save(user);
+            Company company = companyRepository.findById(userData.getCompany().getId()).orElse(null);
+            user.setCompany(company);
 
-            UpdateUserResponse resUpdateUser = new UpdateUserResponse();
-            BeanUtils.copyProperties(updatedUser, resUpdateUser);
+            Role role = roleRepository.findById(userData.getRole().getId()).orElse(null);
+            user.setRole(role);
 
-            UpdateUserResponse.UserCompany userCompany = new UpdateUserResponse.UserCompany();
-            resUpdateUser.setCompany(updatedUser.getCompany() != null ? userCompany : null);
+            userRepository.save(user);
 
-            if (updatedUser.getCompany() != null) {
-                BeanUtils.copyProperties(updatedUser.getCompany(), resUpdateUser.getCompany());
-            }
+            UpdateUserResponse.UserCompany userCompany = convertToUserCompany(user.getCompany());
+            UpdateUserResponse.UserRole userRole = convertToUserRole(user.getRole());
 
-            return resUpdateUser;
+            return UpdateUserResponse.builder()
+                    .id(user.getId())
+                    .name(user.getName())
+                    .email(user.getEmail())
+                    .gender(user.getGender())
+                    .address(user.getAddress())
+                    .updatedAt(user.getUpdatedAt())
+                    .company(userCompany)
+                    .role(userRole)
+                    .build();
         } else {
             throw new ResourceNotFoundException("User not found");
         }
@@ -119,10 +133,11 @@ public class UserService {
             throw new BadRequestException("Email already exists");
         }
 
-        if (userData.getCompany() != null) {
-            Company company = companyRepository.findById(userData.getCompany().getId()).orElse(null);
-            userData.setCompany(company);
-        }
+        Company company = companyRepository.findById(userData.getCompany().getId()).orElse(null);
+        userData.setCompany(company);
+
+        Role role = roleRepository.findById(userData.getRole().getId()).orElse(null);
+        userData.setRole(role);
 
         userData.setPassword(passwordEncoder.encode(userData.getPassword()));
         User newUser = User.builder()
@@ -132,20 +147,23 @@ public class UserService {
                 .gender(userData.getGender())
                 .address(userData.getAddress())
                 .company(userData.getCompany())
+                .role(userData.getRole())
                 .build();
         userRepository.save(newUser);
 
-        CreateUserResponse resCreateUser = new CreateUserResponse();
-        BeanUtils.copyProperties(newUser, resCreateUser);
+        CreateUserResponse.UserCompany userCompany = convertToUserCompany(newUser.getCompany());
+        CreateUserResponse.UserRole userRole = convertToUserRole(newUser.getRole());
 
-        CreateUserResponse.UserCompany userCompany = new CreateUserResponse.UserCompany();
-        resCreateUser.setCompany(newUser.getCompany() != null ? userCompany : null);
-
-        if (newUser.getCompany() != null) {
-            BeanUtils.copyProperties(newUser.getCompany(), resCreateUser.getCompany());
-        }
-
-        return resCreateUser;
+        return CreateUserResponse.builder()
+                .id(newUser.getId())
+                .name(newUser.getName())
+                .email(newUser.getEmail())
+                .gender(newUser.getGender())
+                .address(newUser.getAddress())
+                .createdAt(newUser.getCreatedAt())
+                .company(userCompany)
+                .role(userRole)
+                .build();
     }
 
     public void deleteUser(Long id) {
@@ -163,5 +181,21 @@ public class UserService {
 
     public User findUserByEmailAndRefreshToken(String email, String token) {
         return userRepository.findByEmailAndRefreshToken(email, token);
+    }
+
+    private BaseUserResponse.UserCompany convertToUserCompany(Company company) {
+        if (company == null) return null;
+        return BaseUserResponse.UserCompany.builder()
+                .id(company.getId())
+                .name(company.getName())
+                .build();
+    }
+
+    private BaseUserResponse.UserRole convertToUserRole(Role role) {
+        if (role == null) return null;
+        return BaseUserResponse.UserRole.builder()
+                .id(role.getId())
+                .name(role.getName())
+                .build();
     }
 }
