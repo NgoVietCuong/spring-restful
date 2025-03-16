@@ -7,7 +7,6 @@ import com.nvc.spring_boot.dto.permission.response.CreatePermissionResponse;
 import com.nvc.spring_boot.dto.permission.response.FindPermissionReponse;
 import com.nvc.spring_boot.dto.permission.response.UpdatePermissionResponse;
 import com.nvc.spring_boot.entity.Permission;
-import com.nvc.spring_boot.entity.Skill;
 import com.nvc.spring_boot.service.PermissionService;
 import com.nvc.spring_boot.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
@@ -17,10 +16,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("/permissions")
 public class PermissionController {
     private final PermissionService permissionService;

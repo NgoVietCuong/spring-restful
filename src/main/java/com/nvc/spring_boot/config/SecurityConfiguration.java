@@ -23,17 +23,22 @@ public class SecurityConfiguration {
         http
                 .csrf(c -> c.disable())
                 .cors(Customizer.withDefaults())
-                .authorizeHttpRequests(authz -> authz.requestMatchers("/storage/**", "/auth/login", "/auth/refresh")
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers(
+                                "/storage/**",
+                                "/auth/login",
+                                "/auth/refresh",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml"
+                        )
                         .permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults())
                         .authenticationEntryPoint(customAuthenticationEntryPoint))
-                // .exceptionHandling(
-                //     exceptions -> exceptions
-                //         .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint()) //401
-                //         .accessDeniedHandler(new BearerTokenAccessDeniedHandler()) //403
-                // )
                 .formLogin(f -> f.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
